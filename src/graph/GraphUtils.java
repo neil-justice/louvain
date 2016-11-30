@@ -8,7 +8,7 @@ public class GraphUtils {
                       g.order() + " != " + community.length);
     }
     for (int node = 0; node < g.order(); node++) {
-      g.moveToComm(node, community[node]);
+      g.partitioning().moveToComm(node, community[node]);
     }
     return g;
   }

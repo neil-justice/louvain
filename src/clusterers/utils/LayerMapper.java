@@ -21,15 +21,15 @@ public class LayerMapper {
     // Arrays.sort(communities);
     
     for (int node = 0; node < g.order(); node++) {
-      int comm = g.community(node);
+      int comm = g.partitioning().community(node);
       if (!isFound[comm]) {
         map.put(comm, count);
         isFound[comm] = true;
         count++;
       }
     }
-    if (map.size() != g.numComms()) throw new Error("Map creation failed: " + 
-                                                    g.numComms() + " != " + 
+    if (map.size() != g.partitioning().numComms()) throw new Error("Map creation failed: " + 
+                                                    g.partitioning().numComms() + " != " + 
                                                     map.size());
     layerMaps.add(map);
     return map;
@@ -40,10 +40,10 @@ public class LayerMapper {
   public List<int[]> mapAll() {
     List<int[]> rawComms = new ArrayList<int[]>();
     List<int[]> communities = new ArrayList<int[]>();
-    communities.add(graphs.get(0).communities());
+    communities.add(graphs.get(0).partitioning().communities());
     
     for (int i = 0; i < layer; i++) {
-      rawComms.add(graphs.get(i).communities());
+      rawComms.add(graphs.get(i).partitioning().communities());
     }
     
     for (int i = 0; i < layer - 1; i++) {
@@ -70,7 +70,7 @@ public class LayerMapper {
   
   // maps each node in a layer to its community on the layer above it
   private int[] mapToNextLayer(Graph g, TIntIntHashMap map, int[] commsL2) {
-    int[] commsL1 = g.communities();
+    int[] commsL1 = g.partitioning().communities();
     int[] NL1toCL2 = new int[g.order()];
 
     for (int nodeL1 = 0; nodeL1 < g.order(); nodeL1++) {

@@ -46,7 +46,7 @@ public class LouvainDetector implements Clusterer {
     return mapper.mapAll();
   }
   
-  public double modularity() { return graphs.get(layer).modularity(); }
+  public double modularity() { return graphs.get(layer).partitioning().modularity(); }
   public List<int[]> communities() { return mapper.mapAll(); }
 
   private void addNewLayer() {
@@ -79,7 +79,7 @@ public class LouvainDetector implements Clusterer {
     }
     
     private void reassignCommunities() {
-      double mod = g.modularity();
+      double mod = g.partitioning().modularity();
       double oldMod;
       int moves;
       boolean hasChanged;
@@ -89,12 +89,12 @@ public class LouvainDetector implements Clusterer {
         oldMod = mod;
         moves = maximiseLocalModularity();
         totalMoves += moves;
-        mod = g.modularity();
+        mod = g.partitioning().modularity();
         if (mod - oldMod <= precision) hasChanged = false;
         if (moves == 0) hasChanged = false;
       } while (hasChanged);
       System.out.printf("Mod: %5f  Comms: %d Moves:  %d%n", 
-                          mod , g.numComms(), totalMoves);
+                          mod , g.partitioning().numComms(), totalMoves);
     } 
     
     private int maximiseLocalModularity() {
@@ -111,7 +111,7 @@ public class LouvainDetector implements Clusterer {
       int best = -1;
       
       for (int i = 0; i < g.neighbours(node).size(); i++) {
-        int community = g.community(g.neighbours(node).get(i));
+        int community = g.partitioning().community(g.neighbours(node).get(i));
         double inc = deltaModularity(node, community);
         if (inc > max) {
           max = inc;
@@ -119,8 +119,8 @@ public class LouvainDetector implements Clusterer {
         }
       }
       
-      if (best >= 0 && best != g.community(node)) {
-        g.moveToComm(node, best);
+      if (best >= 0 && best != g.partitioning().community(node)) {
+        g.partitioning().moveToComm(node, best);
         return true;
       }
       else return false;
@@ -128,8 +128,8 @@ public class LouvainDetector implements Clusterer {
 
     // change in modularity if node is moved to community
     private double deltaModularity(int node, int community) {
-      double dnodecomm = (double) g.dnodecomm(node, community);
-      double ctot      = (double) g.totDegree(community);
+      double dnodecomm = (double) g.partitioning().dnodecomm(node, community);
+      double ctot      = (double) g.partitioning().totDegree(community);
       double wdeg      = (double) g.degree(node);
       return dnodecomm - ((ctot * wdeg) / g.m2());
     }

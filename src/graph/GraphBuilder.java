@@ -102,12 +102,12 @@ public class GraphBuilder {
   }
   
   public Graph coarseGrain(Graph g, TIntIntHashMap map) {
-    this.order = g.numComms();
+    this.order = g.partitioning().numComms();
     this.layer = g.layer() + 1;
     initialise();
     int sum = 0;
     
-    for ( SparseIntMatrix.Iterator it = g.commWeightIterator(); it.hasNext(); ) {
+    for ( SparseIntMatrix.Iterator it = g.partitioning().commWeightIterator(); it.hasNext(); ) {
       it.advance();
       int weight = it.value();
       if (weight != 0) {
