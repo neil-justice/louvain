@@ -149,6 +149,7 @@ class Graph {
     g.moveToComm(4,3);
     g.moveToComm(5,3);
     
+    t.is(g.order(),7);
     t.is(g.degree(1),26);
     t.is(g.size(),84);
     t.is(g.degree(0),17);

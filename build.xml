@@ -3,7 +3,7 @@
   <property name="bin" location="bin"/>
   <property name="dist" location="dist"/>
   <property name="lib" location="lib"/>    
-  <property name="main" value="Graph"/>
+  <property name="main" value="G"/>
   <property name="name" value="louvain"/>
 
   <path id="libs">

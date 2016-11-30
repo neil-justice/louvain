@@ -3,8 +3,8 @@ import java.util.*;
 import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.hash.TIntIntHashMap;
 
-public class GraphBuilder
-{
+public class GraphBuilder {
+  
   private SparseIntMatrix matrix;
   private TIntArrayList[] adjList;
   private int[] degrees;
