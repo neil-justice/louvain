@@ -1,0 +1,123 @@
+package com.github.neiljustice.louvain.graph;
+
+import java.io.*;
+import java.util.*;
+import gnu.trove.list.array.TIntArrayList;
+import gnu.trove.map.hash.TIntIntHashMap;
+
+public class GraphFactory {
+  private final GraphBuilder builder = new GraphBuilder();
+
+  public Graph fromFile(String filename) {
+    try {
+      readAll(new File(filename), ",");
+    } catch(NumberFormatException e) {
+      throw new Error("invalid file format");
+    } catch (FileNotFoundException e) {
+      throw new Error("file not found");
+    } catch (IOException e) {
+      throw new Error("IO error");
+    }
+    return build();
+  }
+  
+  private void readAll(File file, String delimiter) 
+  throws NumberFormatException, FileNotFoundException, IOException {
+    
+    BufferedReader reader = new BufferedReader(new FileReader(file));
+    String line;
+    order = getOrder(file, delimiter);
+    initialise();
+    
+    while ((line = reader.readLine()) != null) {
+      String[] splitLine = line.split(delimiter);
+      int n1 = Integer.parseInt(splitLine[0]);
+      int n2 = Integer.parseInt(splitLine[1]);
+      int weight = Integer.parseInt(splitLine[2]);
+
+      if (matrix.get(n1, n2) == 0 && matrix.get(n2, n1) == 0) insertEdgeSym(n1, n2, weight);
+    }
+    reader.close();
+    if (!matrix.isSymmetric()) throw new Error("constructed asymmetric matrix");
+  }
+  
+  // gets the no. of nodes from the file
+  private int getOrder(File file, String delimiter)
+  throws NumberFormatException, FileNotFoundException, IOException {
+    
+    BufferedReader reader = new BufferedReader(new FileReader(file));
+    String line;
+    int max = 0;
+    while ((line = reader.readLine()) != null) {
+      String[] splitLine = line.split(delimiter);
+      int n1 = Integer.parseInt(splitLine[0]);
+      int n2 = Integer.parseInt(splitLine[1]);
+      if (n1 > max) max = n1;
+      if (n2 > max) max = n2;
+    }
+    max++;
+    reader.close();
+    return max;
+  }  
+  
+  public Graph coarseGrain(Graph g, TIntIntHashMap map) {
+    this.order = g.numComms();
+    this.layer = g.layer() + 1;
+    initialise();
+    int sum = 0;
+    
+    for ( SparseIntMatrix.Iterator it = g.commWeightIterator(); it.hasNext(); ) {
+      it.advance();
+      int weight = it.value();
+      if (weight != 0) {
+        int n1 = map.get((int) it.x());
+        int n2 = map.get((int) it.y());
+        insertEdge(n1, n2, weight);
+        sum += weight;
+      }
+    }
+    
+    if (!matrix.isSymmetric()) throw new Error("asymmetric matrix");
+    if (sum != g.size() * 2) throw new Error("builder recieved wrong weights: " + sum + " " + (g.size() * 2));
+    if (sum != sizeDbl) throw new Error("Coarse-grain error: " + sum + " != " + sizeDbl);
+    return build();
+  }
+  
+  public Graph fromCommunity(Graph g, TIntArrayList members) {
+    this.order = members.size();
+    initialise();
+    
+    for (int newNode = 0; newNode < order; newNode++) {
+      int oldNode = members.get(newNode);
+      for (int i = 0; i < g.neighbours(oldNode).size(); i++) {
+        int oldNeigh = g.neighbours(oldNode).get(i);
+        int newNeigh = -1;
+        if ((newNeigh = members.indexOf(oldNeigh)) != -1) {
+          insertEdge(newNode, newNeigh, g.weight(oldNode, oldNeigh));
+        }
+      }
+    }
+    if (!matrix.isSymmetric()) throw new Error("asymmetric matrix");
+    return build();
+  }
+  
+  public Graph erdosRenyi(int order, double prob) {
+    builder.setSize(order);
+    Random rnd = new Random();
+    
+    for (int n1 = 0; n1 < order; n1++) {
+      for (int n2 = 0; n2 < order; n2++) {
+        if (matrix.get(n2, n1) == 0 && n1 != n2 && rnd.nextDouble() < prob) {
+          insertEdgeSym(n1, n2, 1);
+        }
+      }
+    }
+    if (!matrix.isSymmetric()) throw new Error("asymmetric matrix");
+    return build();    
+  }
+
+
+  public Graph build() {
+    return builder.build();
+  }  
+}
