@@ -7,7 +7,11 @@ import java.util.*;
 import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.hash.TIntIntHashMap;
 
+import org.apache.log4j.Logger;
+
 public class LouvainDetector implements Clusterer {
+  private final static Logger LOG = Logger.getLogger(LouvainDetector.class);
+  
   private int totalMoves = 0;
   private int layer = 0; // current community layer
   private final List<Graph> graphs = new ArrayList<Graph>();
@@ -23,7 +27,7 @@ public class LouvainDetector implements Clusterer {
     this();
     graphs.add(g);
     rnd.setSeed(seed);
-    System.out.println("Using seed " + seed);
+    LOG.info("Using seed " + seed);
   }
   
   public LouvainDetector(Graph g) {
@@ -31,7 +35,7 @@ public class LouvainDetector implements Clusterer {
     graphs.add(g);
     long seed = rnd.nextLong();
     rnd.setSeed(seed);
-    System.out.println("Using seed " + seed);
+    LOG.info("Using seed " + seed);
   }
   
   @Override
@@ -39,10 +43,10 @@ public class LouvainDetector implements Clusterer {
   
   public List<int[]> run(int maxLayers) {
     if (maxLayers <= 0) return null;
-    System.out.printf("Detecting graph communities...");
+    LOG.info("Detecting graph communities...");
     
     do {
-      System.out.printf("Round %d:%n", layer);
+      LOG.info("Round :" + layer);
       totalMoves = m.run(graphs.get(layer));
       if (totalMoves > 0 && maxLayers >= layer) addNewLayer();
     }
@@ -78,7 +82,7 @@ public class LouvainDetector implements Clusterer {
       reassignCommunities();
       long e1 = System.nanoTime();
       double time = (e1 - s1) / 1000000000d;
-      System.out.println("seconds taken: " + time );
+      LOG.info("seconds taken: " + time );
       
       return totalMoves;
     }
@@ -98,8 +102,9 @@ public class LouvainDetector implements Clusterer {
         if (mod - oldMod <= precision) hasChanged = false;
         if (moves == 0) hasChanged = false;
       } while (hasChanged);
-      System.out.printf("Mod: %5f  Comms: %d Moves:  %d%n", 
-                          mod , g.partitioning().numComms(), totalMoves);
+      LOG.info("Mod: " + mod + 
+               " Comms: " + g.partitioning().numComms() + 
+               " Moves: " + totalMoves);
     } 
     
     private int maximiseLocalModularity() {

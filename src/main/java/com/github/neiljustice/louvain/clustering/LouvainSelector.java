@@ -1,15 +1,20 @@
 package com.github.neiljustice.louvain.clustering;
 
 import com.github.neiljustice.louvain.graph.*;
+
 import java.util.*;
 import java.nio.file.*;
 import java.nio.charset.Charset;
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
+
 /**
  * Runs the louvain detector the set number of times and writes out the
  * partition data. */
 public class LouvainSelector implements Clusterer {
+  private final static Logger LOG = Logger.getLogger(LouvainSelector.class);
+  
   private final Random rnd = new Random();
   private final String dir;
   private final PartitionWriter writer;
@@ -28,10 +33,10 @@ public class LouvainSelector implements Clusterer {
     double mod = 0d;
     List<int[]> output = new ArrayList<int[]>();
     
-    System.out.println("Running " + times + " times:");
+    LOG.info("Running " + times + " times:");
     for (int i = 0; i < times; i++) {
       seed = rnd.nextLong();
-      System.out.println("Run " + i + ":");
+      LOG.info("Run " + i + ":");
       Graph g = new GraphBuilder().fromFile(dir + "graph.csv");
       LouvainDetector detector = new LouvainDetector(g, seed);
       detector.run();
@@ -42,7 +47,7 @@ public class LouvainSelector implements Clusterer {
       }
     }
     
-    System.out.println("highest mod was " + maxMod);
+    LOG.info("highest mod was " + maxMod);
     write(output);
     return output;
   }

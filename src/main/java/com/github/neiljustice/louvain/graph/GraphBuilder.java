@@ -21,6 +21,22 @@ public class GraphBuilder {
     return fromFile(filename, false);
   }
   
+  public Graph fromFile(File file) {
+    try {
+      readAll(file, ",");
+    } catch(NumberFormatException e) {
+      e.printStackTrace();
+      throw new Error("invalid file format");
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+      throw new Error("file not found");
+    } catch (IOException e) {
+      e.printStackTrace();
+      throw new Error("IO error");
+    }
+    return build();
+  }  
+  
   public Graph fromFile(String filename, boolean needsReIndexing) {
     try {
       if (!needsReIndexing) readAll(new File(filename), ",");

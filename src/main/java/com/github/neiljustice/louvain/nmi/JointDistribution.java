@@ -14,8 +14,8 @@ public class JointDistribution {
     
     for (int node = 0; node < N; node++) {
       int comm = hard.community(node);
-      for (int topic = 0; topic < soft.length(); topic++) {
-        dist[topic][comm] += soft.theta(topic, node) / N;
+      for (int comm2 = 0; comm2 < soft.length(); comm2++) {
+        dist[comm2][comm] += soft.fuzzyPartitioning(comm2, node) / N;
       }
     }
   }

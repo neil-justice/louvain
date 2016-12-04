@@ -4,8 +4,12 @@ import com.github.neiljustice.louvain.clustering.CommunityStructure;
 
 public class NMI {
   
-  public static double NMI(CommunityStructure structure, int layer, double[][] theta) {
-    SoftClustering dist1 = new SoftClustering(theta);
+  public static double NMI(int[] p1, int[] p2) {
+    return NMI(new CommunityStructure(p1), new CommunityStructure(p2));
+  }
+  
+  public static double NMI(CommunityStructure structure, double[][] fuzzyPartitioning) {
+    SoftClustering dist1 = new SoftClustering(fuzzyPartitioning);
     HardClustering dist2 = new HardClustering(structure);
     JointDistribution joint = new JointDistribution(dist1, dist2);
     
