@@ -9,7 +9,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class SparseIntMatrixTests {
+public class SparseIntMatrixTest {
     private static int[][] m1;
     private static SparseIntMatrix m2;
   

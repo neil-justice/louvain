@@ -11,7 +11,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class HardClusteringTests {
+public class HardClusteringTest {
   private static HardClustering hc;
   
   @BeforeClass
@@ -29,12 +29,12 @@ public class HardClusteringTests {
   
   @Test
   public void checkDistribution() {
-    assertEquals(hc.distribution(0), 0.2d);
-    assertEquals(hc.distribution(1), 0.2d);
-    assertEquals(hc.distribution(2), 0.2d);
-    assertEquals(hc.distribution(3), 0.1d);
-    assertEquals(hc.distribution(4), 0.2d);
-    assertEquals(hc.distribution(5), 0.1d);
+    assertEquals(hc.distribution(0), 0.2d, 0d);
+    assertEquals(hc.distribution(1), 0.2d, 0d);
+    assertEquals(hc.distribution(2), 0.2d, 0d);
+    assertEquals(hc.distribution(3), 0.1d, 0d);
+    assertEquals(hc.distribution(4), 0.2d, 0d);
+    assertEquals(hc.distribution(5), 0.1d, 0d);
   }
 
   @Test

@@ -1,4 +1,4 @@
-package com.github.neiljustice.louvain.nmi;
+package com.github.neiljustice.louvain.clustering;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -9,7 +9,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class EntropyTests {
+public class InfomapResultsReaderTest {
   
   @BeforeClass
   public static void init() {

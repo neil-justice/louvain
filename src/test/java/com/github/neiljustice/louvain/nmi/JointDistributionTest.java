@@ -11,7 +11,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class JointDistributionTests {
+public class JointDistributionTest {
   private static JointDistribution jd;
   
   @BeforeClass
@@ -25,19 +25,19 @@ public class JointDistributionTests {
 
   @Test
   public void checkNonzeroDists() {
-    assertEquals(jd.distribution(0, 0), 0.2d);
-    assertEquals(jd.distribution(1, 1), 0.2d);
-    assertEquals(jd.distribution(2, 2), 0.2d);
-    assertEquals(jd.distribution(3, 3), 0.1d);
-    assertEquals(jd.distribution(4, 4), 0.2d);
-    assertEquals(jd.distribution(5, 5), 0.1d);
+    assertEquals(jd.distribution(0, 0), 0.2d, 0d);
+    assertEquals(jd.distribution(1, 1), 0.2d, 0d);
+    assertEquals(jd.distribution(2, 2), 0.2d, 0d);
+    assertEquals(jd.distribution(3, 3), 0.1d, 0d);
+    assertEquals(jd.distribution(4, 4), 0.2d, 0d);
+    assertEquals(jd.distribution(5, 5), 0.1d, 0d);
     
   }
   
   @Test
   public void checkZeroDists() {
-    assertEquals(jd.distribution(0, 1), 0d);
-    assertEquals(jd.distribution(5, 4), 0d);
+    assertEquals(jd.distribution(0, 1), 0d, 0d);
+    assertEquals(jd.distribution(5, 4), 0d, 0d);
   }
 
 }

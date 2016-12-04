@@ -9,7 +9,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class SoftClusteringTests {
+public class EntropyTest {
   
   @BeforeClass
   public static void init() {

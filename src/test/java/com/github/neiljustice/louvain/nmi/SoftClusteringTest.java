@@ -1,4 +1,4 @@
-package com.github.neiljustice.louvain.clustering;
+package com.github.neiljustice.louvain.nmi;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -9,7 +9,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class LayerMapperTests {
+public class SoftClusteringTest {
   
   @BeforeClass
   public static void init() {

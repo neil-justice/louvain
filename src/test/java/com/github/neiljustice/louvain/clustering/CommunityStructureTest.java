@@ -9,7 +9,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class CommunityStructureTests {
+public class CommunityStructureTest {
   private static CommunityStructure cs;
   
   @BeforeClass

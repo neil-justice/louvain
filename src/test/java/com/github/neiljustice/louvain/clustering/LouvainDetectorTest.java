@@ -12,7 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class LouvainDetectorTests {
+public class LouvainDetectorTest {
 
   @Test
   public void checkArxivGraphMod() {
@@ -28,7 +28,7 @@ public class LouvainDetectorTests {
     LouvainDetector ld = new LouvainDetector(g);
     List<int[]> res = ld.run();
     assertEquals(res.size(), 1);
-    assertEquals(res.get(0).length, 6);
-    assertTrue(ld.modularity() > 0.81);
+    assertEquals(g.partitioning().numComms(), 6);
+    assertTrue(ld.modularity() > 0.7);
   }  
 }
