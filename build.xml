@@ -1,0 +1,64 @@
+<project default="compile">
+  <property name="src" location="src"/>
+  <property name="bin" location="bin"/>
+  <property name="dist" location="dist"/>
+  <property name="lib" location="lib"/>    
+  <property name="main" value="Graph"/>
+  <property name="name" value="louvain"/>
+
+  <path id="libs">
+    <fileset dir="${lib}">
+      <include name="*.jar"/>
+    </fileset>
+  </path>  
+  
+  <target name="compile">
+    <tstamp/>
+    <mkdir dir="${bin}"/>
+    <javac 
+      debug="true"
+      debuglevel="lines,vars,source"
+      srcdir="${src}"
+      destdir="${bin}"
+      includeantruntime="false">
+      <classpath refid="libs"/>
+      <compilerarg value="-Xlint:unchecked"/>
+    </javac>
+  </target>
+
+  <target name="run" depends="compile">
+    <java classname="${main}" fork="true">
+      <arg line="${args}"/>
+      <classpath>
+        <pathelement path="${bin}"/>
+        <path refid="libs" />
+      </classpath>
+      <jvmarg value="-Xmx6G"/>
+    </java>
+  </target>
+
+  <target name="test" depends="compile">
+    <java classname="${main}" fork="true">
+      <arg value="-t"/>
+      <classpath>
+        <pathelement path="${bin}"/>
+        <path refid="libs" />
+      </classpath>
+      <jvmarg value="-Xmx3G"/>
+    </java>
+  </target>
+
+  <target name="dist" depends="compile">
+    <mkdir dir="${dist}"/>
+    <jar jarfile="${dist}/${name}-exec-${DSTAMP}.jar" basedir="${bin}">
+      <manifest>
+        <attribute name="Main-Class" value="${main}"/>
+      </manifest>
+    </jar>
+  </target>
+
+  <target name="clean">
+    <delete dir="${bin}"/>
+    <delete dir="${dist}"/>
+  </target>
+</project>
