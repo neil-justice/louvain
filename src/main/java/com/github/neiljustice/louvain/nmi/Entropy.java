@@ -19,6 +19,7 @@ public class Entropy {
    */
   public static double entropy(double[] dist, int base) {
     if (base <= 0) throw new Error("Base cannot be zero or negative");
+    
     double H = 0d;
     for (int i = 0; i < dist.length; i++) {
       if (dist[i] != 0d) H -= dist[i] * Math.log(dist[i]);

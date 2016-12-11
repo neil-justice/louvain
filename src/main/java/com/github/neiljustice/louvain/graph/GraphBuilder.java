@@ -176,6 +176,8 @@ public class GraphBuilder {
   }
   
   public GraphBuilder addEdge(int n1, int n2, int weight) {
+    if (n1 >= order) throw new Error("" + n1 " >= " + order);
+    if (n2 >= order) throw new Error("" + n2 " >= " + order);
     if (matrix.get(n1, n2) != 0) throw new Error("already exists");
     if (matrix == null) throw new Error("initialise first");
     insertEdgeSym(n1, n2, weight);

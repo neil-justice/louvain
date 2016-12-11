@@ -11,7 +11,8 @@ import org.apache.log4j.Logger;
 
 /**
  * Runs the louvain detector the set number of times and writes out the
- * partition data. */
+ * partition data.
+ */
 public class LouvainSelector implements Clusterer {
   private final static Logger LOG = Logger.getLogger(LouvainSelector.class);
   

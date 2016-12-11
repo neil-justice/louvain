@@ -4,8 +4,6 @@ import java.util.*;
 import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.hash.TIntIntHashMap;
 
-
-
 public class CommunityStructure {
   
   private final int order;

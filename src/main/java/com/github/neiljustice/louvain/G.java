@@ -20,11 +20,11 @@ public class G {
     InfomapResultsReader irr = new InfomapResultsReader("graphs/infomap.tree");
     LayeredCommunityStructure cs2 = new LayeredCommunityStructure(irr.run());
     
-    for (int i = 0; i < cs.layers(); i++) {
-      for (int j = 0; j < cs2.layers(); j++) {
-        System.out.printf("%.03f ", NMI.NMI(cs.layer(i), cs2.layer(j)));
-      }
-      System.out.println();
-    }
+    // for (int i = 0; i < cs.layers(); i++) {
+    //   for (int j = 0; j < cs2.layers(); j++) {
+    //     System.out.printf("%.03f ", NMI.NMI(cs.layer(i), cs2.layer(j)));
+    //   }
+    //   System.out.println();
+    // }
   }
 }

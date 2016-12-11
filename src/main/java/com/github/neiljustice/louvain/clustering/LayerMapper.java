@@ -5,18 +5,19 @@ import java.util.*;
 import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.hash.TIntIntHashMap;
 
+/**
+ * Given a list of graphs where each node in graph n + 1 is a community im
+ * graph n, maps the partitionings of all graphs (except the first) as if they
+ * were partitionings of the first graph.
+ */
 public class LayerMapper {
-  private final List<Graph> graphs;
+  private final List<Graph> graphs = new ArrayList<Graph>();
   // maps between communities on L and nodes on L + 1:
   private final List<TIntIntHashMap> layerMaps = new ArrayList<>();
   private int layer = 0;
   
-  public LayerMapper(List<Graph> graphs) {
-    this.graphs = graphs;
-  }
-  
   // map from community -> node on layer above
-  public TIntIntHashMap map(Graph g) {
+  protected TIntIntHashMap createLayerMap(Graph g) {
     int count = 0;
     layer++;
     boolean[] isFound = new boolean[g.order()];
@@ -35,12 +36,13 @@ public class LayerMapper {
                                                     g.partitioning().numComms() + " != " + 
                                                     map.size());
     layerMaps.add(map);
+    graphs.add(g);
     return map;
   }
   
   // uses the layer maps to assign a community from each layer to the base layer
   // graph.
-  public List<int[]> mapAll() {
+  protected List<int[]> run() {
     List<int[]> rawComms = new ArrayList<int[]>();
     List<int[]> communities = new ArrayList<int[]>();
     communities.add(graphs.get(0).partitioning().communities());

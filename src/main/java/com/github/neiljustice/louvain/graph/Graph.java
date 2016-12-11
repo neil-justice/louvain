@@ -55,6 +55,9 @@ public class Graph {
     }
     
     public void moveToComm(int node, int newComm) {
+      rangeCheck(node);
+      rangeCheck(newComm);
+      
       int oldComm = community(node);
       int oldTotDegree = totDegree(oldComm);
       int oldNewTotDegree = totDegree(newComm);
@@ -92,12 +95,15 @@ public class Graph {
     }
     
     // weight between a community and a node
-    public int dnodecomm(int node, int community) {
+    public int dnodecomm(int node, int comm) {
+      rangeCheck(node);
+      rangeCheck(comm);
+      
       int dnodecomm = 0;
       TIntArrayList neighbours = neighbours(node);
       for (int i = 0; i < neighbours.size(); i++) {
         int neigh = neighbours.get(i);
-        if (community(neigh) == community && node != neigh) {
+        if (community(neigh) == comm && node != neigh) {
           dnodecomm += weight(node, neigh);
         }
       }
@@ -117,6 +123,7 @@ public class Graph {
     
     // returns the contribution that this comm makes to the total modularity
     public double modularityContribution(int comm) {
+      rangeCheck(comm);
       double ctot = (double)totDegree(comm);
       double cint = (double)intDegree(comm);
       return (cint/m2) - (ctot/m2)*(ctot/m2);
@@ -126,16 +133,43 @@ public class Graph {
 
     public int numComms() { return numComms; }
     
-    public int community(int node) { return communities[node]; }
+    public int community(int node) { 
+      rangeCheck(node);
+      return communities[node];
+    }
     
-    public int totDegree(int comm) { return totDegrees[comm]; }
+    public int totDegree(int comm) { 
+      rangeCheck(comm);
+      return totDegrees[comm];
+    }
     
-    public int intDegree(int comm) { return intDegrees[comm]; }
+    public int intDegree(int comm) {
+      rangeCheck(comm);
+      return intDegrees[comm];
+    }
     
-    public int communityWeight(int c1, int c2) { return cmatrix.get(c1, c2); }
+    public int communityWeight(int c1, int c2) {
+      rangeCheck(c1);
+      rangeCheck(c2);
+      
+      return cmatrix.get(c1, c2);
+    }
     
     public SparseIntMatrix.Iterator commWeightIterator() { return cmatrix.iterator(); }
   }
+  
+  /** 
+   * loads a partition set.
+   */
+  public void loadPartitioning(int[] partitioning) {
+    if (partitioning.length != order()) {
+      throw new Error("new partitioning size-graph size mismatch: " + 
+                      order() + " != " + partitioning.length);
+    }
+    for (int node = 0; node < order(); node++) {
+      partitioning().moveToComm(node, partitioning[node]);
+    }
+  }  
 
   public double m2() { return m2; }
   
@@ -145,11 +179,31 @@ public class Graph {
   
   public int order() { return order; }
   
-  public int degree(int node) { return degrees[node]; }
+  public int degree(int node) { 
+    rangeCheck(node);
+    return degrees[node];
+  }
   
-  public int weight(int n1, int n2) { return matrix.get(n1, n2); }
+  public int weight(int n1, int n2) { 
+    rangeCheck(n1);
+    rangeCheck(n2);
+    return matrix.get(n1, n2); 
+  }
   
-  public TIntArrayList neighbours(int node) { return adjList[node]; }
+  public TIntArrayList neighbours(int node) { 
+    rangeCheck(node);
+    return adjList[node];
+  }
   
   public Partitioning partitioning() { return partitioning; }
+  
+  private void rangeCheck(int index) {
+    if (index >= order) {
+      throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+    }
+  }
+  
+  private String outOfBoundsMsg(int index) {
+    return "Index: " + index + ", Graph order: " + order;
+  }
 }

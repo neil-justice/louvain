@@ -8,7 +8,9 @@ import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.hash.TIntIntHashMap;
 
 import org.apache.log4j.Logger;
-
+/**
+ * Implementation of the Louvain method of community detection.
+ */
 public class LouvainDetector implements Clusterer {
   private final static Logger LOG = Logger.getLogger(LouvainDetector.class);
   
@@ -17,7 +19,8 @@ public class LouvainDetector implements Clusterer {
   private final List<Graph> graphs = new ArrayList<Graph>();
   private final Maximiser m = new Maximiser();
   private final Random rnd;
-  private final LayerMapper mapper = new LayerMapper(graphs);
+  private final LayerMapper mapper = new LayerMapper();
+  private List<int[]> communities;
   
   private LouvainDetector() {
     rnd = new Random();
@@ -52,15 +55,16 @@ public class LouvainDetector implements Clusterer {
     }
     while (totalMoves > 0 && maxLayers >= layer);
     
-    return mapper.mapAll();
+    communities = mapper.run();
+    return communities;
   }
   
   public double modularity() { return graphs.get(layer).partitioning().modularity(); }
-  public List<int[]> communities() { return mapper.mapAll(); }
+  public List<int[]> communities() { return communities; }
 
   private void addNewLayer() {
     Graph last = graphs.get(layer);
-    TIntIntHashMap map = mapper.map(last);
+    TIntIntHashMap map = mapper.createLayerMap(last);
     layer++;
     Graph coarse = new GraphBuilder().coarseGrain(last, map);
     graphs.add(coarse);

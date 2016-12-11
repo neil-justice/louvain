@@ -5,6 +5,11 @@ import java.io.*;
 import gnu.trove.map.hash.TObjectIntHashMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
+/**
+ * Reads the .tree files produced by the Infomap community detection algorithm.
+ * See <a href="http://www.mapequation.org/code.html" target="_top>
+ * The official Infomap website</a> for more on Infomap.
+ */
 public class InfomapResultsReader implements Clusterer {
   private int nodeCount = 0;
   private int layerCount = 0;
