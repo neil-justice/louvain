@@ -91,7 +91,7 @@ public class CommunityStructure {
 
   public int community(int node) {
     if (node >= order) {
-      throw new Error("node index out of bounds");
+      throw new IndexOutOfBoundsException("node index out of bounds");
     }
     return community[node];
   }
@@ -102,7 +102,7 @@ public class CommunityStructure {
 
   public int communitySize(int comm) {
     if (comm >= numComms) {
-      throw new Error("node index out of bounds");
+      throw new IndexOutOfBoundsException("node index out of bounds");
     }
     return communitySize[comm];
   }
@@ -113,7 +113,7 @@ public class CommunityStructure {
 
   public TIntArrayList communityMembers(int comm) {
     if (comm >= numComms) {
-      throw new Error("node index out of bounds");
+      throw new IndexOutOfBoundsException("node index out of bounds");
     }
     return communityMembers[comm];
   }

@@ -39,7 +39,7 @@ public class LayeredCommunityStructure {
 
   public CommunityStructure layer(int layer) {
     if (layer >= layers) {
-      throw new Error("layer index out of bounds");
+      throw new IndexOutOfBoundsException("layer index out of bounds");
     }
     return layerStructures.get(layer);
   }

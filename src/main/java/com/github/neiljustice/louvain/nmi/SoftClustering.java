@@ -45,7 +45,7 @@ public class SoftClustering implements Clustering {
   @Override
   public double distribution(int index) {
     if (index >= numComms) {
-      throw new Error("index out of bounds");
+      throw new IndexOutOfBoundsException("index out of bounds");
     }
     return dist[index];
   }
@@ -62,10 +62,10 @@ public class SoftClustering implements Clustering {
 
   public double fuzzyPartitioning(int comm, int node) {
     if (comm >= numComms) {
-      throw new Error("index out of bounds");
+      throw new IndexOutOfBoundsException("index out of bounds");
     }
     if (node >= N) {
-      throw new Error("node out of bounds");
+      throw new IndexOutOfBoundsException("node out of bounds");
     }
     return fuzzyPartitioning[comm][node];
   }

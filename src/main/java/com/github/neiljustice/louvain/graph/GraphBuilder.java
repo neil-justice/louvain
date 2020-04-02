@@ -22,6 +22,7 @@ SOFTWARE. */
 
 package com.github.neiljustice.louvain.graph;
 
+import com.github.neiljustice.louvain.exception.LouvainException;
 import com.github.neiljustice.louvain.util.SparseIntMatrix;
 import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.hash.TIntIntHashMap;
@@ -46,15 +47,8 @@ public class GraphBuilder {
   public Graph fromFile(File file) {
     try {
       readAll(file, ",");
-    } catch (NumberFormatException e) {
-      e.printStackTrace();
-      throw new Error("invalid file format");
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-      throw new Error("file not found");
     } catch (IOException e) {
-      e.printStackTrace();
-      throw new Error("IO error");
+      throw new IllegalStateException(e);
     }
     return build();
   }
@@ -66,15 +60,8 @@ public class GraphBuilder {
       } else {
         readAllNonIntIndexed(new File(filename), ",");
       }
-    } catch (NumberFormatException e) {
-      e.printStackTrace();
-      throw new Error("invalid file format");
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-      throw new Error("file not found");
     } catch (IOException e) {
-      e.printStackTrace();
-      throw new Error("IO error");
+      throw new IllegalStateException(e);
     }
     return build();
   }
@@ -99,7 +86,7 @@ public class GraphBuilder {
     }
     reader.close();
     if (!matrix.isSymmetric()) {
-      throw new Error("constructed asymmetric matrix");
+      throw new LouvainException("constructed asymmetric matrix");
     }
   }
 
@@ -145,13 +132,13 @@ public class GraphBuilder {
       int n2 = index.get(dstId);
 
       if (matrix.get(n1, n2) != 0 || matrix.get(n2, n1) != 0) {
-        throw new Error("duplicate val at " + srcId + " " + dstId);
+        throw new LouvainException("duplicate val at " + srcId + " " + dstId);
       }
       insertEdgeSym(n1, n2, weight);
     }
 
     if (!matrix.isSymmetric()) {
-      throw new Error("constructed asymmetric matrix");
+      throw new LouvainException("constructed asymmetric matrix");
     }
     reader.close();
   }
@@ -214,16 +201,16 @@ public class GraphBuilder {
 
   public GraphBuilder addEdge(int n1, int n2, int weight) {
     if (n1 >= order) {
-      throw new Error("" + n1 + " >= " + order);
+      throw new LouvainException("" + n1 + " >= " + order);
     }
     if (n2 >= order) {
-      throw new Error("" + n2 + " >= " + order);
+      throw new LouvainException("" + n2 + " >= " + order);
     }
     if (matrix.get(n1, n2) != 0) {
-      throw new Error("already exists");
+      throw new LouvainException("already exists");
     }
     if (matrix == null) {
-      throw new Error("initialise first");
+      throw new LouvainException("initialise first");
     }
     insertEdgeSym(n1, n2, weight);
 
@@ -248,13 +235,13 @@ public class GraphBuilder {
     }
 
     if (!matrix.isSymmetric()) {
-      throw new Error("asymmetric matrix");
+      throw new LouvainException("asymmetric matrix");
     }
     if (sum != g.size() * 2) {
-      throw new Error("builder recieved wrong weights: " + sum + " " + (g.size() * 2));
+      throw new LouvainException("builder recieved wrong weights: " + sum + " " + (g.size() * 2));
     }
     if (sum != sizeDbl) {
-      throw new Error("Coarse-grain error: " + sum + " != " + sizeDbl);
+      throw new LouvainException("Coarse-grain error: " + sum + " != " + sizeDbl);
     }
     return build();
   }
@@ -274,7 +261,7 @@ public class GraphBuilder {
       }
     }
     if (!matrix.isSymmetric()) {
-      throw new Error("asymmetric matrix");
+      throw new LouvainException("asymmetric matrix");
     }
     return build();
   }
@@ -292,7 +279,7 @@ public class GraphBuilder {
       }
     }
     if (!matrix.isSymmetric()) {
-      throw new Error("asymmetric matrix");
+      throw new LouvainException("asymmetric matrix");
     }
     return build();
   }

@@ -65,7 +65,7 @@ public class JointDistribution {
 
   public double distribution(int i, int j) {
     if (i >= dist.length || j >= dist[i].length) {
-      throw new Error("index out of bounds");
+      throw new IndexOutOfBoundsException("index out of bounds");
     }
     return dist[i][j];
   }

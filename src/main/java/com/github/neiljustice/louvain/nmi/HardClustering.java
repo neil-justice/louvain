@@ -49,7 +49,7 @@ public class HardClustering implements Clustering {
   @Override
   public double distribution(int index) {
     if (index >= numComms) {
-      throw new Error("index out of bounds");
+      throw new IndexOutOfBoundsException("index out of bounds");
     }
     return dist[index];
   }
@@ -70,14 +70,14 @@ public class HardClustering implements Clustering {
 
   public int community(int comm) {
     if (comm >= numComms) {
-      throw new Error("index out of bounds");
+      throw new IndexOutOfBoundsException("index out of bounds");
     }
     return community[comm];
   }
 
   public TIntArrayList members(int comm) {
     if (comm >= numComms) {
-      throw new Error("index out of bounds");
+      throw new IndexOutOfBoundsException("index out of bounds");
     }
     return members[comm];
   }

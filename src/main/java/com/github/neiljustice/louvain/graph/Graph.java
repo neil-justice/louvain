@@ -22,6 +22,7 @@ SOFTWARE. */
 
 package com.github.neiljustice.louvain.graph;
 
+import com.github.neiljustice.louvain.exception.LouvainException;
 import com.github.neiljustice.louvain.util.SparseIntMatrix;
 import gnu.trove.list.array.TIntArrayList;
 
@@ -58,7 +59,7 @@ public class Graph {
    */
   public void loadPartitioning(int[] partitioning) {
     if (partitioning.length != order()) {
-      throw new Error("new partitioning size-graph size mismatch: " +
+      throw new LouvainException("new partitioning size-graph size mismatch: " +
           order() + " != " + partitioning.length);
     }
     for (int node = 0; node < order(); node++) {
@@ -177,7 +178,7 @@ public class Graph {
         numComms++;
       }
       if (totDegree(oldComm) < 0) {
-        throw new Error("-ve total degree");
+        throw new LouvainException("-ve total degree");
       }
     }
 

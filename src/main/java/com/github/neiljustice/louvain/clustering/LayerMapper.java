@@ -22,6 +22,7 @@ SOFTWARE. */
 
 package com.github.neiljustice.louvain.clustering;
 
+import com.github.neiljustice.louvain.exception.LouvainException;
 import com.github.neiljustice.louvain.graph.Graph;
 import gnu.trove.map.hash.TIntIntHashMap;
 
@@ -56,7 +57,7 @@ public class LayerMapper {
       }
     }
     if (map.size() != g.partitioning().numComms()) {
-      throw new Error("Map creation failed: " +
+      throw new LouvainException("Map creation failed: " +
           g.partitioning().numComms() + " != " +
           map.size());
     }

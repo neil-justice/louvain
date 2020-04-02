@@ -57,12 +57,8 @@ public class InfomapResultsReader implements Clusterer {
       getInfo();
       initialise();
       readLines();
-    } catch (NumberFormatException e) {
-      throw new Error("invalid file format");
-    } catch (FileNotFoundException e) {
-      throw new Error("file not found");
-    } catch (IOException e) {
-      throw new Error("IO error");
+    } catch (NumberFormatException | IOException e) {
+      throw new IllegalStateException(e);
     }
   }
 

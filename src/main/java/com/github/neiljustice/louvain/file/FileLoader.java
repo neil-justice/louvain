@@ -37,10 +37,8 @@ public class FileLoader {
       while ((line = reader.readLine()) != null) {
         coll.add(line.toLowerCase());
       }
-    } catch (FileNotFoundException e) {
-      throw new Error("input file not found at " + in);
     } catch (IOException e) {
-      throw new Error("IO error");
+      throw new IllegalStateException(e);
     }
   }
 
@@ -61,10 +59,8 @@ public class FileLoader {
         }
       }
       writer.flush();
-    } catch (FileNotFoundException e) {
-      throw new Error("input file not found at " + in);
     } catch (IOException e) {
-      throw new Error("IO error");
+      throw new IllegalStateException(e);
     }
   }
 
@@ -83,10 +79,8 @@ public class FileLoader {
         }
         list.add(line);
       }
-    } catch (FileNotFoundException e) {
-      System.out.println("No file called " + in);
     } catch (IOException e) {
-      throw new Error("IO error");
+      throw new IllegalStateException(e);
     }
     return list;
   }

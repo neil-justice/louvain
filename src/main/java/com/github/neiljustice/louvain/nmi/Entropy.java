@@ -22,6 +22,8 @@ SOFTWARE. */
 
 package com.github.neiljustice.louvain.nmi;
 
+import com.github.neiljustice.louvain.exception.LouvainException;
+
 public class Entropy {
 
   /**
@@ -32,11 +34,11 @@ public class Entropy {
   }
 
   /**
-   * if base == length of dist, this normalised entropy to within the range 0-1.
+   * if base == length of dist, this normalises entropy to within the range 0-1.
    */
   public static double entropy(double[] dist, int base) {
     if (base <= 0) {
-      throw new Error("Base cannot be zero or negative");
+      throw new LouvainException("Base cannot be zero or negative");
     }
 
     double H = 0d;
