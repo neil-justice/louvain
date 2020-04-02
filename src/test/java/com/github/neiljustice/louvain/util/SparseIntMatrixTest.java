@@ -26,6 +26,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class SparseIntMatrixTest {
   private static int[][] m1;
@@ -58,7 +59,7 @@ public class SparseIntMatrixTest {
 
   @Test
   public void checkSymmetry() {
-    assertEquals(m2.isSymmetric(), true);
+    assertTrue(m2.isSymmetric());
   }
 }
 

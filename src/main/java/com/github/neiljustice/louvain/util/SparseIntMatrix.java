@@ -42,6 +42,7 @@ public class SparseIntMatrix {
   public SparseIntMatrix(SparseIntMatrix m) {
     this.size = m.size();
     map = m.copyMap();
+    compressed = m.compressed;
   }
 
   public int get(int x, int y) {
@@ -70,7 +71,7 @@ public class SparseIntMatrix {
   }
 
   public SparseIntMatrix.Iterator iterator() {
-    if (compressed == false) {
+    if (!compressed) {
       compress();
       compressed = true;
     }

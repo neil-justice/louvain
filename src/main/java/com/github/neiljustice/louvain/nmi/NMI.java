@@ -55,8 +55,7 @@ public class NMI {
   private static double run(Clustering dist1, Clustering dist2,
                             JointDistribution joint) {
     double MI = MI(dist1, dist2, joint);
-    double NMI = normalise(MI, dist1, dist2);
-    return NMI;
+    return normalise(MI, dist1, dist2);
   }
 
   private static double MI(Clustering dist1, Clustering dist2,

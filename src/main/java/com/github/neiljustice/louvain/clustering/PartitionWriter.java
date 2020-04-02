@@ -52,7 +52,7 @@ public class PartitionWriter {
   }
 
   private List<String> prepareData() {
-    List<String> data = new ArrayList<String>();
+    List<String> data = new ArrayList<>();
 
     for (int node = 0; node < order; node++) {
       StringBuilder builder = new StringBuilder();
@@ -73,7 +73,7 @@ public class PartitionWriter {
     try {
       Files.write(filepath, data, StandardCharsets.UTF_8);
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new IllegalStateException(e);
     }
   }
 }

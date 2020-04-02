@@ -31,7 +31,7 @@ public class LayeredCommunityStructure {
 
   public LayeredCommunityStructure(List<int[]> communities) {
     layers = communities.size();
-    layerStructures = new ArrayList<CommunityStructure>();
+    layerStructures = new ArrayList<>();
     for (int layer = 0; layer < layers; layer++) {
       layerStructures.add(new CommunityStructure(communities.get(layer)));
     }

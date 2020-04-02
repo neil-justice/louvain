@@ -38,7 +38,7 @@ import java.util.Random;
  */
 public class LouvainDetector implements Clusterer {
   private final static Logger LOG = LogManager.getLogger(LouvainDetector.class);
-  private final List<Graph> graphs = new ArrayList<Graph>();
+  private final List<Graph> graphs = new ArrayList<>();
   private final Maximiser m = new Maximiser();
   private final Random rnd;
   private final LayerMapper mapper = new LayerMapper();

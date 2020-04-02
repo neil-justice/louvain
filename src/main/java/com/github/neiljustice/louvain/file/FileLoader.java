@@ -69,7 +69,7 @@ public class FileLoader {
   }
 
   public static List<String> readFile(String in, LineReader r) {
-    List<String> list = new ArrayList<String>();
+    List<String> list = new ArrayList<>();
     try {
       BufferedReader reader = new BufferedReader(new FileReader(new File(in)));
       String line;

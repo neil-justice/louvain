@@ -56,8 +56,8 @@ public class LouvainSelector implements Clusterer {
   public List<int[]> run(int times) {
     long seed;
     double maxMod = 0d;
-    double mod = 0d;
-    List<int[]> output = new ArrayList<int[]>();
+    double mod;
+    List<int[]> output = new ArrayList<>();
 
     LOG.info("Running " + times + " times:");
     for (int i = 0; i < times; i++) {

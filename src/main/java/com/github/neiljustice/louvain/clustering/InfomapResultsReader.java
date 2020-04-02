@@ -25,7 +25,10 @@ package com.github.neiljustice.louvain.clustering;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.map.hash.TObjectIntHashMap;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +39,7 @@ import java.util.List;
  */
 public class InfomapResultsReader implements Clusterer {
   private final File file;
-  private final List<int[]> communities = new ArrayList<int[]>();
+  private final List<int[]> communities = new ArrayList<>();
   private final TIntObjectHashMap<String> commTags = new TIntObjectHashMap<>();
   private int nodeCount = 0;
   private int layerCount = 0;
@@ -130,7 +133,7 @@ public class InfomapResultsReader implements Clusterer {
   }
 
   private void assignCommunityIDs(int layer) {
-    TObjectIntHashMap<String> map = new TObjectIntHashMap<String>();
+    TObjectIntHashMap<String> map = new TObjectIntHashMap<>();
     int count = 0;
     int[] comms = communities.get(layer);
 

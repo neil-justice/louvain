@@ -42,9 +42,9 @@ public class Entropy {
     }
 
     double H = 0d;
-    for (int i = 0; i < dist.length; i++) {
-      if (dist[i] != 0d) {
-        H -= dist[i] * Math.log(dist[i]);
+    for (double v : dist) {
+      if (v != 0d) {
+        H -= v * Math.log(v);
       }
     }
     return H / Math.log(base);

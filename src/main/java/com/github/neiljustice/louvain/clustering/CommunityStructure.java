@@ -67,7 +67,7 @@ public class CommunityStructure {
 
     for (int node = 0; node < order; node++) {
       int comm = partitioning[node];
-      if (commExists[comm] == false) {
+      if (!commExists[comm]) {
         commExists[comm] = true;
         commToIndex.put(comm, index);
         index++;

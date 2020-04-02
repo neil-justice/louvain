@@ -28,7 +28,10 @@ import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.hash.TIntIntHashMap;
 import gnu.trove.map.hash.TObjectIntHashMap;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Random;
 
 public class GraphBuilder {
@@ -119,7 +122,7 @@ public class GraphBuilder {
     BufferedReader reader = new BufferedReader(new FileReader(file));
 
     String line;
-    TObjectIntHashMap index = buildIndex(file, delimiter);
+    TObjectIntHashMap<String> index = buildIndex(file, delimiter);
     order = index.size();
     initialise();
 
@@ -149,7 +152,7 @@ public class GraphBuilder {
     BufferedReader reader = new BufferedReader(new FileReader(file));
     String line;
     int i = 0;
-    TObjectIntHashMap<String> index = new TObjectIntHashMap<String>();
+    TObjectIntHashMap<String> index = new TObjectIntHashMap<>();
 
     while ((line = reader.readLine()) != null) {
       String[] splitLine = line.split(delimiter);
@@ -254,7 +257,7 @@ public class GraphBuilder {
       int oldNode = members.get(newNode);
       for (int i = 0; i < g.neighbours(oldNode).size(); i++) {
         int oldNeigh = g.neighbours(oldNode).get(i);
-        int newNeigh = -1;
+        int newNeigh;
         if ((newNeigh = members.indexOf(oldNeigh)) != -1) {
           insertEdge(newNode, newNeigh, g.weight(oldNode, oldNeigh));
         }

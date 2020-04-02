@@ -35,7 +35,7 @@ import java.util.List;
  * were partitionings of the first graph.
  */
 public class LayerMapper {
-  private final List<Graph> graphs = new ArrayList<Graph>();
+  private final List<Graph> graphs = new ArrayList<>();
   // maps between communities on L and nodes on L + 1:
   private final List<TIntIntHashMap> layerMaps = new ArrayList<>();
   private int layer = 0;
@@ -69,8 +69,8 @@ public class LayerMapper {
   // uses the layer maps to assign a community from each layer to the base layer
   // graph.
   protected List<int[]> run() {
-    List<int[]> rawComms = new ArrayList<int[]>();
-    List<int[]> communities = new ArrayList<int[]>();
+    List<int[]> rawComms = new ArrayList<>();
+    List<int[]> communities = new ArrayList<>();
     communities.add(graphs.get(0).partitioning().communities());
 
     for (int i = 0; i < layer; i++) {
