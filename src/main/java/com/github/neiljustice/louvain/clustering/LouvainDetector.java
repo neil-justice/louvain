@@ -29,13 +29,14 @@ import com.github.neiljustice.louvain.util.ArrayUtils;
 import java.util.*;
 import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.hash.TIntIntHashMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import org.apache.log4j.Logger;
 /**
  * Implementation of the Louvain method of community detection.
  */
 public class LouvainDetector implements Clusterer {
-  private final static Logger LOG = Logger.getLogger(LouvainDetector.class);
+  private final static Logger LOG = LogManager.getLogger(LouvainDetector.class);
   
   private int totalMoves = 0;
   private int layer = 0; // current community layer

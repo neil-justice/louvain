@@ -24,20 +24,21 @@ SOFTWARE. */
 package com.github.neiljustice.louvain.clustering;
 
 import com.github.neiljustice.louvain.graph.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 import java.nio.file.*;
 import java.nio.charset.Charset;
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
 
 /**
  * Runs the louvain detector the set number of times and writes out the
  * partition data.
  */
 public class LouvainSelector implements Clusterer {
-  private final static Logger LOG = Logger.getLogger(LouvainSelector.class);
+  private final static Logger LOG = LogManager.getLogger(LouvainSelector.class);
   
   private final Random rnd = new Random();
   private final String dir;
