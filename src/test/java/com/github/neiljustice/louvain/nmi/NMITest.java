@@ -1,4 +1,3 @@
-
 /* MIT License
 
 Copyright (c) 2018 Neil Justice
@@ -23,23 +22,18 @@ SOFTWARE. */
 
 package com.github.neiljustice.louvain.nmi;
 
-import com.github.neiljustice.louvain.clustering.*;
+import com.github.neiljustice.louvain.clustering.CommunityStructure;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
 
 public class NMITest {
   private static CommunityStructure cs;
   private static CommunityStructure c2;
   private static int[] p1 = {0, 0, 1, 1, 2, 2, 3, 4, 4, 5};
   private static int[] p2 = {5, 5, 4, 4, 3, 3, 2, 1, 1, 0};
-  
+
   @BeforeClass
   public static void init() {
     cs = new CommunityStructure(p1);

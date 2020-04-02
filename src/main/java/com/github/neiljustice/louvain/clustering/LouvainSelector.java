@@ -1,4 +1,3 @@
-
 /* MIT License
 
 Copyright (c) 2018 Neil Justice
@@ -23,14 +22,14 @@ SOFTWARE. */
 
 package com.github.neiljustice.louvain.clustering;
 
-import com.github.neiljustice.louvain.graph.*;
+import com.github.neiljustice.louvain.graph.Graph;
+import com.github.neiljustice.louvain.graph.GraphBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.*;
-import java.nio.file.*;
-import java.nio.charset.Charset;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 
 /**
@@ -39,25 +38,27 @@ import java.io.IOException;
  */
 public class LouvainSelector implements Clusterer {
   private final static Logger LOG = LogManager.getLogger(LouvainSelector.class);
-  
+
   private final Random rnd = new Random();
   private final String dir;
   private final PartitionWriter writer;
-  
+
   public LouvainSelector(String dir) {
     this.dir = dir;
     writer = new PartitionWriter(dir);
   }
-  
+
   @Override
-  public List<int[]> run() { return run(10); }  
-  
+  public List<int[]> run() {
+    return run(10);
+  }
+
   public List<int[]> run(int times) {
     long seed;
     double maxMod = 0d;
     double mod = 0d;
     List<int[]> output = new ArrayList<int[]>();
-    
+
     LOG.info("Running " + times + " times:");
     for (int i = 0; i < times; i++) {
       seed = rnd.nextLong();
@@ -71,12 +72,12 @@ public class LouvainSelector implements Clusterer {
         output = detector.communities();
       }
     }
-    
+
     LOG.info("highest mod was " + maxMod);
     write(output);
     return output;
   }
-  
+
   private void write(List<int[]> communities) {
     writer.write(communities, dir + "best-louvain.csv");
   }

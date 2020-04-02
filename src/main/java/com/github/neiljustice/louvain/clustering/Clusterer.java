@@ -1,4 +1,3 @@
-
 /* MIT License
 
 Copyright (c) 2018 Neil Justice
@@ -29,5 +28,5 @@ import java.util.List;
  * Interface which all non-fuzzy community detectors or clusterers inherit from.
  */
 public interface Clusterer {
-  public List<int[]> run();
+  List<int[]> run();
 }

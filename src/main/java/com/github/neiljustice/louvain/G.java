@@ -1,4 +1,3 @@
-
 /* MIT License
 
 Copyright (c) 2018 Neil Justice
@@ -23,26 +22,28 @@ SOFTWARE. */
 
 package com.github.neiljustice.louvain;
 
-import com.github.neiljustice.louvain.graph.*;
-import com.github.neiljustice.louvain.clustering.*;
-import com.github.neiljustice.louvain.nmi.*;
+import com.github.neiljustice.louvain.clustering.InfomapResultsReader;
+import com.github.neiljustice.louvain.clustering.LayeredCommunityStructure;
+import com.github.neiljustice.louvain.clustering.LouvainDetector;
+import com.github.neiljustice.louvain.graph.Graph;
+import com.github.neiljustice.louvain.graph.GraphBuilder;
 
 public class G {
   public static void main(String[] args) {
     G prog = new G();
-    
+
     prog.run();
   }
-  
+
   public void run() {
-    
+
     Graph g = new GraphBuilder().fromFile("graphs/twitter.csv", true);
     LouvainDetector ld = new LouvainDetector(g);
     LayeredCommunityStructure cs = new LayeredCommunityStructure(ld.run());
 
     InfomapResultsReader irr = new InfomapResultsReader("graphs/infomap.tree");
     LayeredCommunityStructure cs2 = new LayeredCommunityStructure(irr.run());
-    
+
     // for (int i = 0; i < cs.layers(); i++) {
     //   for (int j = 0; j < cs2.layers(); j++) {
     //     System.out.printf("%.03f ", NMI.NMI(cs.layer(i), cs2.layer(j)));

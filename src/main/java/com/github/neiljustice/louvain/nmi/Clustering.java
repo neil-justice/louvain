@@ -1,4 +1,3 @@
-
 /* MIT License
 
 Copyright (c) 2018 Neil Justice
@@ -27,7 +26,9 @@ package com.github.neiljustice.louvain.nmi;
  * Interface which defines a clustering of nodes probabilistically.
  */
 public interface Clustering {
-  public double distribution(int index);
-  public double entropy();
-  public int length();
+  double distribution(int index);
+
+  double entropy();
+
+  int length();
 }

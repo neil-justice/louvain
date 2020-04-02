@@ -1,4 +1,3 @@
-
 /* MIT License
 
 Copyright (c) 2018 Neil Justice
@@ -23,19 +22,16 @@ SOFTWARE. */
 
 package com.github.neiljustice.louvain.clustering;
 
-import com.github.neiljustice.louvain.graph.*;
-import java.util.*;
-import java.io.*;
+import com.github.neiljustice.louvain.graph.Graph;
+import com.github.neiljustice.louvain.graph.GraphBuilder;
+import org.junit.Test;
+
+import java.io.File;
 import java.net.URL;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
 
 public class LouvainDetectorTest {
 
@@ -56,9 +52,9 @@ public class LouvainDetectorTest {
     assertEquals(g.partitioning().numComms(), 6);
     assertTrue(ld.modularity() > 0.7);
   }
-  
+
   private File getFile(String filename) {
     URL url = Thread.currentThread().getContextClassLoader().getResource(filename);
-    return new File(url.getPath());    
+    return new File(url.getPath());
   }
 }

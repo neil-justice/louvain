@@ -1,4 +1,3 @@
-
 /* MIT License
 
 Copyright (c) 2018 Neil Justice
@@ -28,7 +27,7 @@ public class SoftClustering implements Clustering {
   private final double[] dist;
   private final int numComms;
   private final double[][] fuzzyPartitioning;
-  
+
   public SoftClustering(double[][] fuzzyPartitioning) {
     this.fuzzyPartitioning = fuzzyPartitioning;
     N = fuzzyPartitioning[0].length;
@@ -42,24 +41,36 @@ public class SoftClustering implements Clustering {
       dist[comm] /= N;
     }
   }
-  
+
   @Override
-  public double distribution(int index) { 
-    if (index >= numComms) throw new Error("index out of bounds");
+  public double distribution(int index) {
+    if (index >= numComms) {
+      throw new Error("index out of bounds");
+    }
     return dist[index];
-  }  
-  
+  }
+
   @Override
-  public double entropy() { return Entropy.entropy(dist); }
-  
+  public double entropy() {
+    return Entropy.entropy(dist);
+  }
+
   @Override
-  public int length() { return numComms; }
-  
-  public double fuzzyPartitioning(int comm, int node) { 
-    if (comm >= numComms) throw new Error("index out of bounds");
-    if (node >= N) throw new Error("node out of bounds");
+  public int length() {
+    return numComms;
+  }
+
+  public double fuzzyPartitioning(int comm, int node) {
+    if (comm >= numComms) {
+      throw new Error("index out of bounds");
+    }
+    if (node >= N) {
+      throw new Error("node out of bounds");
+    }
     return fuzzyPartitioning[comm][node];
   }
-  
-  public int N() { return N; }
+
+  public int N() {
+    return N;
+  }
 }
