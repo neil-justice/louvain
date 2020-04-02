@@ -27,8 +27,11 @@ import gnu.trove.map.hash.TObjectIntHashMap;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,13 +42,20 @@ import java.util.List;
  */
 public class InfomapResultsReader implements Clusterer {
   private final File file;
+  private final Charset charset;
   private final List<int[]> communities = new ArrayList<>();
   private final TIntObjectHashMap<String> commTags = new TIntObjectHashMap<>();
   private int nodeCount = 0;
   private int layerCount = 0;
 
+  public InfomapResultsReader(String filename, Charset charset) {
+    file = new File(filename);
+    this.charset = charset;
+  }
+
   public InfomapResultsReader(String filename) {
     file = new File(filename);
+    this.charset = StandardCharsets.UTF_8;
   }
 
   @Override
@@ -68,50 +78,50 @@ public class InfomapResultsReader implements Clusterer {
   // reads lines of format:
   // 1:1:1 0.00244731 "83698" 83698
   // and puts node ID and community info into <int, String> map
-  private void readLines()
-      throws NumberFormatException, IOException {
-
-    BufferedReader reader = new BufferedReader(new FileReader(file));
+  private void readLines() throws NumberFormatException, IOException {
     String line;
 
-    while ((line = reader.readLine()) != null) {
-      if (!line.startsWith("#")) {
-        String[] splitLine = line.split(" ");
-        int node = Integer.parseInt(splitLine[3]);
-        String layers = splitLine[0].substring(0, splitLine[0].lastIndexOf(":"));
-        commTags.put(node, layers);
+    try (FileInputStream fis = new FileInputStream(file);
+         InputStreamReader isr = new InputStreamReader(fis, charset);
+         BufferedReader reader = new BufferedReader(isr)) {
+      while ((line = reader.readLine()) != null) {
+        if (!line.startsWith("#")) {
+          final String[] splitLine = line.split(" ");
+          final int node = Integer.parseInt(splitLine[3]);
+          final String layers = splitLine[0].substring(0, splitLine[0].lastIndexOf(":"));
+          commTags.put(node, layers);
+        }
       }
     }
-    reader.close();
   }
 
   // gets the no. of nodes and layers from the file
-  private void getInfo()
-      throws NumberFormatException, IOException {
-
-    BufferedReader reader = new BufferedReader(new FileReader(file));
+  private void getInfo() throws NumberFormatException, IOException {
     String line;
 
-    while ((line = reader.readLine()) != null) {
-      if (!line.startsWith("#")) {
-        String[] splitLine = line.split(" ");
-        int node = Integer.parseInt(splitLine[3]);
-        int layers = splitLine[0].split(":").length - 1;
-        if (node > nodeCount) {
-          nodeCount = node;
-        }
-        if (layers > layerCount) {
-          layerCount = layers;
+    try (FileInputStream fis = new FileInputStream(file);
+         InputStreamReader isr = new InputStreamReader(fis, charset);
+         BufferedReader reader = new BufferedReader(isr)) {
+      while ((line = reader.readLine()) != null) {
+        if (!line.startsWith("#")) {
+          final String[] splitLine = line.split(" ");
+          final int node = Integer.parseInt(splitLine[3]);
+          final int layers = splitLine[0].split(":").length - 1;
+          if (node > nodeCount) {
+            nodeCount = node;
+          }
+          if (layers > layerCount) {
+            layerCount = layers;
+          }
         }
       }
     }
     nodeCount++;
-    reader.close();
   }
 
   private void initialise() {
     for (int layer = 0; layer < layerCount; layer++) {
-      int[] comms = new int[nodeCount];
+      final int[] comms = new int[nodeCount];
       communities.add(comms);
     }
   }
@@ -133,12 +143,12 @@ public class InfomapResultsReader implements Clusterer {
   }
 
   private void assignCommunityIDs(int layer) {
-    TObjectIntHashMap<String> map = new TObjectIntHashMap<>();
+    final TObjectIntHashMap<String> map = new TObjectIntHashMap<>();
     int count = 0;
-    int[] comms = communities.get(layer);
+    final int[] comms = communities.get(layer);
 
     for (int node = 0; node < nodeCount; node++) {
-      String tag = truncateTag(commTags.get(node), layer);
+      final String tag = truncateTag(commTags.get(node), layer);
       if (!map.containsKey(tag)) {
         map.put(tag, count);
         count++;
@@ -146,7 +156,7 @@ public class InfomapResultsReader implements Clusterer {
     }
 
     for (int node = 0; node < nodeCount; node++) {
-      String tag = truncateTag(commTags.get(node), layer);
+      final String tag = truncateTag(commTags.get(node), layer);
       comms[node] = map.get(tag);
     }
   }
@@ -155,7 +165,7 @@ public class InfomapResultsReader implements Clusterer {
   // cut off ':mid:low', returning 'top:high'
   private String truncateTag(String tag, int layer) {
     for (int i = 0; i < layer; i++) {
-      int t = tag.lastIndexOf(":");
+      final int t = tag.lastIndexOf(":");
       if (t != -1) {
         tag = tag.substring(0, t);
       }

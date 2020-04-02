@@ -22,18 +22,7 @@ SOFTWARE. */
 
 package com.github.neiljustice.louvain.clustering;
 
-import org.junit.BeforeClass;
 
 public class LayerMapperTest {
-
-  @BeforeClass
-  public static void init() {
-
-  }
-
-  // @Test
-  // public void check() {
-  //
-  // }
 
 }

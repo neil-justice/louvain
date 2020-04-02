@@ -35,17 +35,15 @@ import java.util.List;
  */
 public class RandomCommunityAssigner implements Clusterer {
   private final List<int[]> randomCommunities = new ArrayList<>();
-  private final List<int[]> actualCommunities;
   private final int layers;
   private final int order;
 
   public RandomCommunityAssigner(List<int[]> actualCommunities) {
     order = actualCommunities.get(0).length;
     layers = actualCommunities.size();
-    this.actualCommunities = actualCommunities;
 
     for (int layer = 0; layer < layers; layer++) {
-      int[] comm = new int[order];
+      final int[] comm = new int[order];
       randomCommunities.add(comm);
       System.arraycopy(actualCommunities.get(layer), 0, comm, 0, order);
       ArrayUtils.shuffle(comm);

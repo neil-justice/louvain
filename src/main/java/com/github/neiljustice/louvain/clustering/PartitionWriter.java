@@ -34,7 +34,8 @@ import java.util.List;
  * Writes the community of each node in each layer to a file.
  */
 public class PartitionWriter {
-  private final String del = ":";
+  private static final String DEL = ":";
+
   private final String dir;
   private int order;
   private int layers;
@@ -52,13 +53,13 @@ public class PartitionWriter {
   }
 
   private List<String> prepareData() {
-    List<String> data = new ArrayList<>();
+    final List<String> data = new ArrayList<>();
 
     for (int node = 0; node < order; node++) {
-      StringBuilder builder = new StringBuilder();
+      final StringBuilder builder = new StringBuilder();
       builder.append(node);
       for (int layer = 0; layer < layers; layer++) {
-        builder.append(del);
+        builder.append(DEL);
         builder.append(communities.get(layer)[node]);
       }
       data.add(builder.toString());
@@ -67,8 +68,8 @@ public class PartitionWriter {
   }
 
   private void writeOut(String filename) {
-    Path filepath = Paths.get(dir + filename);
-    List<String> data = prepareData();
+    final Path filepath = Paths.get(dir + filename);
+    final List<String> data = prepareData();
 
     try {
       Files.write(filepath, data, StandardCharsets.UTF_8);

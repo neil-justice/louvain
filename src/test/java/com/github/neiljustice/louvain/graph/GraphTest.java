@@ -22,16 +22,16 @@ SOFTWARE. */
 
 package com.github.neiljustice.louvain.graph;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 public class GraphTest {
-  private static Graph g;
+  private Graph g;
 
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     g = new GraphBuilder().setSize(7)
         .addEdge(0, 1, 12)
         .addEdge(1, 2, 14)

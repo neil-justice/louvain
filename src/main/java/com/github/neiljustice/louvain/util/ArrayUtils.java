@@ -41,15 +41,15 @@ public class ArrayUtils {
 
   public static void shuffle(int[] a) {
     final Random rnd = new Random();
-    int count = a.length;
+    final int count = a.length;
     for (int i = count; i > 1; i--) {
-      int r = rnd.nextInt(i);
+      final int r = rnd.nextInt(i);
       swap(a, i - 1, r);
     }
   }
 
   public static void fillRandomly(int[] a) {
-    int count = a.length;
+    final int count = a.length;
 
     for (int i = 0; i < count; i++) {
       a[i] = i;
@@ -59,7 +59,7 @@ public class ArrayUtils {
   }
 
   private static void swap(int[] a, int i, int j) {
-    int temp = a[i];
+    final int temp = a[i];
     a[i] = a[j];
     a[j] = temp;
   }

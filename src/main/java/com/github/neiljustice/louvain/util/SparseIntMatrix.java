@@ -58,12 +58,8 @@ public class SparseIntMatrix {
     set(x, y, get(x, y) + val);
   }
 
-  private boolean isNonZero(long key, int val) {
-    return val != 0;
-  }
-
   private void compress() {
-    map.retainEntries(this::isNonZero);
+    map.retainEntries((k, v) -> v != 0);
   }
 
   public int size() {
@@ -83,7 +79,7 @@ public class SparseIntMatrix {
   }
 
   public boolean isSymmetric() {
-    for (SparseIntMatrix.Iterator it = iterator(); it.hasNext(); ) {
+    for (final SparseIntMatrix.Iterator it = iterator(); it.hasNext(); ) {
       it.advance();
       if (it.value() != get(it.x(), it.y())) {
         return false;

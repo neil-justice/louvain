@@ -44,12 +44,12 @@ public class LayerMapper {
   protected TIntIntHashMap createLayerMap(Graph g) {
     int count = 0;
     layer++;
-    boolean[] isFound = new boolean[g.order()];
-    TIntIntHashMap map = new TIntIntHashMap();
+    final boolean[] isFound = new boolean[g.order()];
+    final TIntIntHashMap map = new TIntIntHashMap();
     // Arrays.sort(communities);
 
     for (int node = 0; node < g.order(); node++) {
-      int comm = g.partitioning().community(node);
+      final int comm = g.partitioning().community(node);
       if (!isFound[comm]) {
         map.put(comm, count);
         isFound[comm] = true;
@@ -69,8 +69,8 @@ public class LayerMapper {
   // uses the layer maps to assign a community from each layer to the base layer
   // graph.
   protected List<int[]> run() {
-    List<int[]> rawComms = new ArrayList<>();
-    List<int[]> communities = new ArrayList<>();
+    final List<int[]> rawComms = new ArrayList<>();
+    final List<int[]> communities = new ArrayList<>();
     communities.add(graphs.get(0).partitioning().communities());
 
     for (int i = 0; i < layer; i++) {
@@ -101,13 +101,13 @@ public class LayerMapper {
 
   // maps each node in a layer to its community on the layer above it
   private int[] mapToNextLayer(Graph g, TIntIntHashMap map, int[] commsL2) {
-    int[] commsL1 = g.partitioning().communities();
-    int[] NL1toCL2 = new int[g.order()];
+    final int[] commsL1 = g.partitioning().communities();
+    final int[] NL1toCL2 = new int[g.order()];
 
     for (int nodeL1 = 0; nodeL1 < g.order(); nodeL1++) {
-      int commL1 = commsL1[nodeL1];
-      int nodeL2 = map.get(commL1);
-      int commL2 = commsL2[nodeL2];
+      final int commL1 = commsL1[nodeL1];
+      final int nodeL2 = map.get(commL1);
+      final int commL2 = commsL2[nodeL2];
       NL1toCL2[nodeL1] = commL2;
     }
 

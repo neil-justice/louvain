@@ -22,17 +22,17 @@ SOFTWARE. */
 
 package com.github.neiljustice.louvain.clustering;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 public class CommunityStructureTest {
-  private static CommunityStructure cs;
+  private CommunityStructure cs;
 
-  @BeforeClass
-  public static void init() {
-    int[] partition = {1, 8, 8, 5, 1, 5, 2, 9, 0, 9};
+  @Before
+  public void init() {
+    final int[] partition = {1, 8, 8, 5, 1, 5, 2, 9, 0, 9};
     cs = new CommunityStructure(partition);
   }
 

@@ -23,20 +23,20 @@ SOFTWARE. */
 package com.github.neiljustice.louvain.nmi;
 
 import com.github.neiljustice.louvain.clustering.CommunityStructure;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 public class JointDistributionTest {
-  private static JointDistribution jd;
+  private JointDistribution jd;
 
-  @BeforeClass
-  public static void init() {
-    int[] partition = {0, 0, 1, 1, 2, 2, 3, 4, 4, 5};
-    CommunityStructure cs = new CommunityStructure(partition);
-    HardClustering hc = new HardClustering(cs);
-    HardClustering h2 = new HardClustering(cs);
+  @Before
+  public void init() {
+    final int[] partition = {0, 0, 1, 1, 2, 2, 3, 4, 4, 5};
+    final CommunityStructure cs = new CommunityStructure(partition);
+    final HardClustering hc = new HardClustering(cs);
+    final HardClustering h2 = new HardClustering(cs);
     jd = new JointDistribution(hc, h2);
   }
 

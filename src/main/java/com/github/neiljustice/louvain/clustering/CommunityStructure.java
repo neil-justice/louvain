@@ -41,7 +41,7 @@ public class CommunityStructure {
     order = partitioning.length;
     community = new int[order];
 
-    TIntIntHashMap commToIndex = reIndexCommunities(partitioning);
+    final TIntIntHashMap commToIndex = reIndexCommunities(partitioning);
     numComms = commToIndex.size();
 
     communitySize = new int[numComms];
@@ -52,7 +52,7 @@ public class CommunityStructure {
     }
 
     for (int node = 0; node < order; node++) {
-      int comm = commToIndex.get(partitioning[node]);
+      final int comm = commToIndex.get(partitioning[node]);
       community[node] = comm;
       communitySize[comm]++;
       communityMembers[comm].add(node);
@@ -61,12 +61,12 @@ public class CommunityStructure {
 
   // Re-index the community IDs consecutively from 0:
   private TIntIntHashMap reIndexCommunities(int[] partitioning) {
-    TIntIntHashMap commToIndex = new TIntIntHashMap();
-    boolean[] commExists = new boolean[order];
+    final TIntIntHashMap commToIndex = new TIntIntHashMap();
+    final boolean[] commExists = new boolean[order];
     int index = 0;
 
     for (int node = 0; node < order; node++) {
-      int comm = partitioning[node];
+      final int comm = partitioning[node];
       if (!commExists[comm]) {
         commExists[comm] = true;
         commToIndex.put(comm, index);

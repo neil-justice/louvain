@@ -30,19 +30,19 @@ import com.github.neiljustice.louvain.graph.GraphBuilder;
 
 public class G {
   public static void main(String[] args) {
-    G prog = new G();
+    final G prog = new G();
 
     prog.run();
   }
 
   public void run() {
 
-    Graph g = new GraphBuilder().fromFile("graphs/twitter.csv", true);
-    LouvainDetector ld = new LouvainDetector(g);
-    LayeredCommunityStructure cs = new LayeredCommunityStructure(ld.run());
+    final Graph g = new GraphBuilder().fromFile("graphs/twitter.csv", true);
+    final LouvainDetector ld = new LouvainDetector(g);
+    final LayeredCommunityStructure cs = new LayeredCommunityStructure(ld.run());
 
-    InfomapResultsReader irr = new InfomapResultsReader("graphs/infomap.tree");
-    LayeredCommunityStructure cs2 = new LayeredCommunityStructure(irr.run());
+    final InfomapResultsReader irr = new InfomapResultsReader("graphs/infomap.tree");
+    final LayeredCommunityStructure cs2 = new LayeredCommunityStructure(irr.run());
 
     // for (int i = 0; i < cs.layers(); i++) {
     //   for (int j = 0; j < cs2.layers(); j++) {

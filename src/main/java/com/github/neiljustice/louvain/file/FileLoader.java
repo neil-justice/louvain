@@ -22,74 +22,33 @@ SOFTWARE. */
 
 package com.github.neiljustice.louvain.file;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class FileLoader {
 
-  public static void loadList(String in, Collection<String> coll) {
-    try {
-      BufferedReader reader = new BufferedReader(new FileReader(new File(in)));
-      String line;
-
-      while ((line = reader.readLine()) != null) {
-        coll.add(line.toLowerCase());
-      }
-    } catch (IOException e) {
-      throw new IllegalStateException(e);
-    }
-  }
-
-  public static void processFile(String in, String out, LineOperator op) {
-    try {
-      BufferedReader reader = new BufferedReader(new FileReader(new File(in)));
-      BufferedWriter writer = new BufferedWriter(new FileWriter(new File(out)));
-      String line;
-      int cnt = 0;
-
-      while ((line = reader.readLine()) != null) {
-        cnt++;
-        String outString = op.operate(line);
-        writer.write(outString);
-        writer.newLine();
-        if (cnt % 100 == 0) {
-          writer.flush();
-        }
-      }
-      writer.flush();
-    } catch (IOException e) {
-      throw new IllegalStateException(e);
-    }
-  }
-
   public static List<String> readFile(String in) {
-    return readFile(in, null);
+    return readFile(in, StandardCharsets.UTF_8);
   }
 
-  public static List<String> readFile(String in, LineReader r) {
-    List<String> list = new ArrayList<>();
-    try {
-      BufferedReader reader = new BufferedReader(new FileReader(new File(in)));
+  public static List<String> readFile(String in, Charset charset) {
+    final List<String> list = new ArrayList<>();
+    try (FileInputStream fis = new FileInputStream(in);
+         InputStreamReader isr = new InputStreamReader(fis, charset);
+         BufferedReader reader = new BufferedReader(isr)) {
       String line;
       while ((line = reader.readLine()) != null) {
-        if (r != null) {
-          r.read(line);
-        }
         list.add(line);
       }
     } catch (IOException e) {
       throw new IllegalStateException(e);
     }
     return list;
-  }
-
-  public interface LineOperator {
-    String operate(String in);
-  }
-
-  public interface LineReader {
-    void read(String in);
   }
 }

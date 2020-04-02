@@ -22,18 +22,6 @@ SOFTWARE. */
 
 package com.github.neiljustice.louvain.nmi;
 
-import org.junit.BeforeClass;
-
 public class EntropyTest {
-
-  @BeforeClass
-  public static void init() {
-
-  }
-
-  // @Test
-  // public void check() {
-  //
-  // }
 
 }

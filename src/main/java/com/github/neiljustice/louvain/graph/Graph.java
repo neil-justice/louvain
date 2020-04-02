@@ -138,9 +138,9 @@ public class Graph {
       rangeCheck(node);
       rangeCheck(newComm);
 
-      int oldComm = community(node);
-      int oldTotDegree = totDegree(oldComm);
-      int oldNewTotDegree = totDegree(newComm);
+      final int oldComm = community(node);
+      final int oldTotDegree = totDegree(oldComm);
+      final int oldNewTotDegree = totDegree(newComm);
       if (oldComm == newComm) {
         return;
       }
@@ -148,24 +148,24 @@ public class Graph {
       communities[node] = newComm;
       totDegrees[oldComm] -= degree(node);
       totDegrees[newComm] += degree(node);
-      TIntArrayList neighbours = neighbours(node);
+      final TIntArrayList neighbours = neighbours(node);
       for (int i = 0; i < neighbours.size(); i++) {
-        int neighbour = neighbours.get(i);
-        int weight = weight(node, neighbour);
+        final int neighbour = neighbours.get(i);
+        final int weight = weight(node, neighbour);
         if (neighbour != node) {
           cmatrix.add(newComm, community(neighbour), weight);
           cmatrix.add(community(neighbour), newComm, weight);
           cmatrix.add(oldComm, community(neighbour), -weight);
           cmatrix.add(community(neighbour), oldComm, -weight);
           if (community(neighbour) == newComm) {
-            intDegrees[newComm] += (weight * 2);
+            intDegrees[newComm] += weight * 2;
           }
           if (community(neighbour) == oldComm) {
-            intDegrees[oldComm] -= (weight * 2);
+            intDegrees[oldComm] -= weight * 2;
           }
         }
       }
-      int selfWeight = weight(node, node);
+      final int selfWeight = weight(node, node);
       cmatrix.add(newComm, newComm, selfWeight);
       cmatrix.add(oldComm, oldComm, -selfWeight);
       intDegrees[oldComm] -= selfWeight;
@@ -188,9 +188,9 @@ public class Graph {
       rangeCheck(comm);
 
       int dnodecomm = 0;
-      TIntArrayList neighbours = neighbours(node);
+      final TIntArrayList neighbours = neighbours(node);
       for (int i = 0; i < neighbours.size(); i++) {
-        int neigh = neighbours.get(i);
+        final int neigh = neighbours.get(i);
         if (community(neigh) == comm && node != neigh) {
           dnodecomm += weight(node, neigh);
         }
@@ -202,8 +202,8 @@ public class Graph {
       double q = 0d;
 
       for (int comm = 0; comm < order; comm++) {
-        double ctot = totDegree(comm);
-        double cint = intDegree(comm);
+        final double ctot = totDegree(comm);
+        final double cint = intDegree(comm);
         q += (cint / m2) - (ctot / m2) * (ctot / m2);
       }
       return q;
@@ -212,8 +212,8 @@ public class Graph {
     // returns the contribution that this comm makes to the total modularity
     public double modularityContribution(int comm) {
       rangeCheck(comm);
-      double ctot = totDegree(comm);
-      double cint = intDegree(comm);
+      final double ctot = totDegree(comm);
+      final double cint = intDegree(comm);
       return (cint / m2) - (ctot / m2) * (ctot / m2);
     }
 

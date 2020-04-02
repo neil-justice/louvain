@@ -22,18 +22,18 @@ SOFTWARE. */
 
 package com.github.neiljustice.louvain.util;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class SparseIntMatrixTest {
-  private static int[][] m1;
-  private static SparseIntMatrix m2;
+  private int[][] m1;
+  private SparseIntMatrix m2;
 
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     m1 = new int[3][3];
     m2 = new SparseIntMatrix(3);
 

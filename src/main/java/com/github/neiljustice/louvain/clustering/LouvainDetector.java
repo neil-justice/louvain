@@ -60,7 +60,7 @@ public class LouvainDetector implements Clusterer {
   public LouvainDetector(Graph g) {
     this();
     graphs.add(g);
-    long seed = rnd.nextLong();
+    final long seed = rnd.nextLong();
     rnd.setSeed(seed);
     LOG.info("Using seed " + seed);
   }
@@ -98,16 +98,17 @@ public class LouvainDetector implements Clusterer {
   }
 
   private void addNewLayer() {
-    Graph last = graphs.get(layer);
-    TIntIntHashMap map = mapper.createLayerMap(last);
+    final Graph last = graphs.get(layer);
+    final TIntIntHashMap map = mapper.createLayerMap(last);
     layer++;
-    Graph coarse = new GraphBuilder().coarseGrain(last, map);
+    final Graph coarse = new GraphBuilder().coarseGrain(last, map);
     graphs.add(coarse);
   }
 
 
   class Maximiser {
-    private final double precision = 0.000001;
+    private static final double PRECISION = 0.000001;
+
     private Graph g;
     private int[] shuffledNodes;
 
@@ -117,10 +118,10 @@ public class LouvainDetector implements Clusterer {
       ArrayUtils.fillRandomly(shuffledNodes);
       totalMoves = 0;
 
-      long s1 = System.nanoTime();
+      final long s1 = System.nanoTime();
       reassignCommunities();
-      long e1 = System.nanoTime();
-      double time = (e1 - s1) / 1000000000d;
+      final long e1 = System.nanoTime();
+      final double time = (e1 - s1) / 1000000000d;
       LOG.info("seconds taken: " + time);
 
       return totalMoves;
@@ -138,7 +139,7 @@ public class LouvainDetector implements Clusterer {
         moves = maximiseLocalModularity();
         totalMoves += moves;
         mod = g.partitioning().modularity();
-        if (mod - oldMod <= precision) {
+        if (mod - oldMod <= PRECISION) {
           hasChanged = false;
         }
         if (moves == 0) {
@@ -153,7 +154,7 @@ public class LouvainDetector implements Clusterer {
     private int maximiseLocalModularity() {
       int moves = 0;
       for (int i = 0; i < g.order(); i++) {
-        int node = shuffledNodes[i];
+        final int node = shuffledNodes[i];
         if (makeBestMove(node)) {
           moves++;
         }
@@ -166,8 +167,8 @@ public class LouvainDetector implements Clusterer {
       int best = -1;
 
       for (int i = 0; i < g.neighbours(node).size(); i++) {
-        int community = g.partitioning().community(g.neighbours(node).get(i));
-        double inc = deltaModularity(node, community);
+        final int community = g.partitioning().community(g.neighbours(node).get(i));
+        final double inc = deltaModularity(node, community);
         if (inc > max) {
           max = inc;
           best = community;
@@ -184,9 +185,9 @@ public class LouvainDetector implements Clusterer {
 
     // change in modularity if node is moved to community
     private double deltaModularity(int node, int community) {
-      double dnodecomm = g.partitioning().dnodecomm(node, community);
-      double ctot = g.partitioning().totDegree(community);
-      double wdeg = g.degree(node);
+      final double dnodecomm = g.partitioning().dnodecomm(node, community);
+      final double ctot = g.partitioning().totDegree(community);
+      final double wdeg = g.degree(node);
       return dnodecomm - ((ctot * wdeg) / g.m2());
     }
   }

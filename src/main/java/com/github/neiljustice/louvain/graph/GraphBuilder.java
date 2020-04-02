@@ -30,8 +30,11 @@ import gnu.trove.map.hash.TObjectIntHashMap;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
 public class GraphBuilder {
@@ -48,126 +51,135 @@ public class GraphBuilder {
   }
 
   public Graph fromFile(File file) {
-    try {
-      readAll(file, ",");
-    } catch (IOException e) {
-      throw new IllegalStateException(e);
-    }
+    readAll(file, ",", StandardCharsets.UTF_8);
     return build();
   }
 
   public Graph fromFile(String filename, boolean needsReIndexing) {
-    try {
-      if (!needsReIndexing) {
-        readAll(new File(filename), ",");
-      } else {
-        readAllNonIntIndexed(new File(filename), ",");
-      }
-    } catch (IOException e) {
-      throw new IllegalStateException(e);
+    return fromFile(filename, needsReIndexing, ",", StandardCharsets.UTF_8);
+  }
+
+  public Graph fromFile(String filename, boolean needsReIndexing, String delimiter, Charset charset) {
+    if (!needsReIndexing) {
+      readAll(new File(filename), delimiter, charset);
+    } else {
+      readAllNonIntIndexed(new File(filename), delimiter, charset);
     }
     return build();
   }
 
-  private void readAll(File file, String delimiter)
-      throws NumberFormatException, IOException {
-
-    BufferedReader reader = new BufferedReader(new FileReader(file));
+  private void readAll(File file, String delimiter, Charset charset) {
     String line;
-    order = getOrder(file, delimiter);
+    order = getOrder(file, delimiter, charset);
     initialise();
 
-    while ((line = reader.readLine()) != null) {
-      String[] splitLine = line.split(delimiter);
-      int n1 = Integer.parseInt(splitLine[0]);
-      int n2 = Integer.parseInt(splitLine[1]);
-      int weight = Integer.parseInt(splitLine[2]);
+    try (FileInputStream fis = new FileInputStream(file);
+         InputStreamReader isr = new InputStreamReader(fis, charset);
+         BufferedReader reader = new BufferedReader(isr)) {
+      while ((line = reader.readLine()) != null) {
+        final String[] splitLine = line.split(delimiter);
+        final int n1 = Integer.parseInt(splitLine[0]);
+        final int n2 = Integer.parseInt(splitLine[1]);
+        final int weight = Integer.parseInt(splitLine[2]);
 
-      if (matrix.get(n1, n2) == 0 && matrix.get(n2, n1) == 0) {
-        insertEdgeSym(n1, n2, weight);
+        if (matrix.get(n1, n2) == 0 && matrix.get(n2, n1) == 0) {
+          insertEdgeSym(n1, n2, weight);
+        }
       }
+    } catch (IOException e) {
+      throw new IllegalStateException(e);
     }
-    reader.close();
+
     if (!matrix.isSymmetric()) {
       throw new LouvainException("constructed asymmetric matrix");
     }
   }
 
-  // gets the no. of nodes from the file
-  private int getOrder(File file, String delimiter)
-      throws NumberFormatException, IOException {
-
-    BufferedReader reader = new BufferedReader(new FileReader(file));
+  /**
+   * Get the number of nodes from the file.
+   */
+  private int getOrder(File file, String delimiter, Charset charset) {
     String line;
     int max = 0;
-    while ((line = reader.readLine()) != null) {
-      String[] splitLine = line.split(delimiter);
-      int n1 = Integer.parseInt(splitLine[0]);
-      int n2 = Integer.parseInt(splitLine[1]);
-      if (n1 > max) {
-        max = n1;
+
+    try (FileInputStream fis = new FileInputStream(file);
+         InputStreamReader isr = new InputStreamReader(fis, charset);
+         BufferedReader reader = new BufferedReader(isr)) {
+      while ((line = reader.readLine()) != null) {
+        final String[] splitLine = line.split(delimiter);
+        final int n1 = Integer.parseInt(splitLine[0]);
+        final int n2 = Integer.parseInt(splitLine[1]);
+        if (n1 > max) {
+          max = n1;
+        }
+        if (n2 > max) {
+          max = n2;
+        }
       }
-      if (n2 > max) {
-        max = n2;
-      }
+    } catch (IOException e) {
+      throw new IllegalStateException(e);
     }
+
     max++;
-    reader.close();
     return max;
   }
 
-  private void readAllNonIntIndexed(File file, String delimiter)
-      throws NumberFormatException, IOException {
-
-    BufferedReader reader = new BufferedReader(new FileReader(file));
-
+  private void readAllNonIntIndexed(File file, String delimiter, Charset charset) {
+    final TObjectIntHashMap<String> index = buildIndex(file, delimiter, charset);
     String line;
-    TObjectIntHashMap<String> index = buildIndex(file, delimiter);
     order = index.size();
     initialise();
 
-    while ((line = reader.readLine()) != null) {
-      String[] splitLine = line.split(delimiter);
-      String srcId = splitLine[0];
-      String dstId = splitLine[1];
-      int weight = Integer.parseInt(splitLine[2]);
-      int n1 = index.get(srcId);
-      int n2 = index.get(dstId);
+    try (FileInputStream fis = new FileInputStream(file);
+         InputStreamReader isr = new InputStreamReader(fis, charset);
+         BufferedReader reader = new BufferedReader(isr)) {
+      while ((line = reader.readLine()) != null) {
+        final String[] splitLine = line.split(delimiter);
+        final String srcId = splitLine[0];
+        final String dstId = splitLine[1];
+        final int weight = Integer.parseInt(splitLine[2]);
+        final int n1 = index.get(srcId);
+        final int n2 = index.get(dstId);
 
-      if (matrix.get(n1, n2) != 0 || matrix.get(n2, n1) != 0) {
-        throw new LouvainException("duplicate val at " + srcId + " " + dstId);
+        if (matrix.get(n1, n2) != 0 || matrix.get(n2, n1) != 0) {
+          throw new LouvainException("duplicate val at " + srcId + " " + dstId);
+        }
+        insertEdgeSym(n1, n2, weight);
       }
-      insertEdgeSym(n1, n2, weight);
+    } catch (IOException e) {
+      throw new IllegalStateException(e);
     }
 
     if (!matrix.isSymmetric()) {
       throw new LouvainException("constructed asymmetric matrix");
     }
-    reader.close();
   }
 
-  private TObjectIntHashMap<String> buildIndex(File file, String delimiter)
-      throws NumberFormatException, IOException {
-
-    BufferedReader reader = new BufferedReader(new FileReader(file));
+  private TObjectIntHashMap<String> buildIndex(File file, String delimiter, Charset charset) {
+    final TObjectIntHashMap<String> index = new TObjectIntHashMap<>();
     String line;
     int i = 0;
-    TObjectIntHashMap<String> index = new TObjectIntHashMap<>();
 
-    while ((line = reader.readLine()) != null) {
-      String[] splitLine = line.split(delimiter);
-      String n1 = splitLine[0];
-      String n2 = splitLine[1];
-      if (!index.contains(n1)) {
-        index.put(n1, i);
-        i++;
+    try (FileInputStream fis = new FileInputStream(file);
+         InputStreamReader isr = new InputStreamReader(fis, charset);
+         BufferedReader reader = new BufferedReader(isr)) {
+      while ((line = reader.readLine()) != null) {
+        final String[] splitLine = line.split(delimiter);
+        final String n1 = splitLine[0];
+        final String n2 = splitLine[1];
+        if (!index.contains(n1)) {
+          index.put(n1, i);
+          i++;
+        }
+        if (!index.contains(n2)) {
+          index.put(n2, i);
+          i++;
+        }
       }
-      if (!index.contains(n2)) {
-        index.put(n2, i);
-        i++;
-      }
+    } catch (IOException e) {
+      throw new IllegalStateException(e);
     }
-    reader.close();
+
     return index;
   }
 
@@ -209,11 +221,11 @@ public class GraphBuilder {
     if (n2 >= order) {
       throw new LouvainException("" + n2 + " >= " + order);
     }
-    if (matrix.get(n1, n2) != 0) {
-      throw new LouvainException("already exists");
-    }
     if (matrix == null) {
       throw new LouvainException("initialise first");
+    }
+    if (matrix.get(n1, n2) != 0) {
+      throw new LouvainException("already exists");
     }
     insertEdgeSym(n1, n2, weight);
 
@@ -226,12 +238,12 @@ public class GraphBuilder {
     initialise();
     int sum = 0;
 
-    for (SparseIntMatrix.Iterator it = g.partitioning().commWeightIterator(); it.hasNext(); ) {
+    for (final SparseIntMatrix.Iterator it = g.partitioning().commWeightIterator(); it.hasNext(); ) {
       it.advance();
-      int weight = it.value();
+      final int weight = it.value();
       if (weight != 0) {
-        int n1 = map.get(it.x());
-        int n2 = map.get(it.y());
+        final int n1 = map.get(it.x());
+        final int n2 = map.get(it.y());
         insertEdge(n1, n2, weight);
         sum += weight;
       }
@@ -254,10 +266,10 @@ public class GraphBuilder {
     initialise();
 
     for (int newNode = 0; newNode < order; newNode++) {
-      int oldNode = members.get(newNode);
+      final int oldNode = members.get(newNode);
       for (int i = 0; i < g.neighbours(oldNode).size(); i++) {
-        int oldNeigh = g.neighbours(oldNode).get(i);
-        int newNeigh;
+        final int oldNeigh = g.neighbours(oldNode).get(i);
+        final int newNeigh;
         if ((newNeigh = members.indexOf(oldNeigh)) != -1) {
           insertEdge(newNode, newNeigh, g.weight(oldNode, oldNeigh));
         }
@@ -271,7 +283,7 @@ public class GraphBuilder {
 
   public Graph erdosRenyi(int order, double prob) {
     this.order = order;
-    Random rnd = new Random();
+    final Random rnd = new Random();
     initialise();
 
     for (int n1 = 0; n1 < order; n1++) {

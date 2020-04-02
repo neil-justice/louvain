@@ -28,7 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PartitionReader implements Clusterer {
-  private final String del = ":";
+  private static final String DEL = ":";
+
   private final int order;
   private final int layers;
   private final List<int[]> communities = new ArrayList<>();
@@ -37,7 +38,7 @@ public class PartitionReader implements Clusterer {
   public PartitionReader(String filename) {
     data = FileLoader.readFile(filename);
     order = data.size();
-    layers = data.get(0).split(del).length - 1; // first col is node num.
+    layers = data.get(0).split(DEL).length - 1; // first col is node num.
     reconstruct();
   }
 
@@ -48,9 +49,9 @@ public class PartitionReader implements Clusterer {
 
     try {
       for (int node = 0; node < order; node++) {
-        String[] line = data.get(node).split(del);
+        final String[] line = data.get(node).split(DEL);
         for (int layer = 0; layer < layers; layer++) {
-          int comm = Integer.parseInt(line[layer + 1]);
+          final int comm = Integer.parseInt(line[layer + 1]);
           communities.get(layer)[node] = comm;
         }
       }

@@ -63,8 +63,8 @@ public class LouvainSelector implements Clusterer {
     for (int i = 0; i < times; i++) {
       seed = rnd.nextLong();
       LOG.info("Run " + i + ":");
-      Graph g = new GraphBuilder().fromFile(dir + "graph.csv");
-      LouvainDetector detector = new LouvainDetector(g, seed);
+      final Graph g = new GraphBuilder().fromFile(dir + "graph.csv");
+      final LouvainDetector detector = new LouvainDetector(g, seed);
       detector.run();
       mod = detector.modularity();
       if (mod > maxMod) {

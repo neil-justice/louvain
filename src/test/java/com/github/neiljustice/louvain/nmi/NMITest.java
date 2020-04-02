@@ -29,10 +29,10 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class NMITest {
-  private CommunityStructure cs;
-  private CommunityStructure c2;
   private static final int[] p1 = {0, 0, 1, 1, 2, 2, 3, 4, 4, 5};
   private static final int[] p2 = {5, 5, 4, 4, 3, 3, 2, 1, 1, 0};
+  private CommunityStructure cs;
+  private CommunityStructure c2;
 
   @Before
   public void init() {
