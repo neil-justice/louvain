@@ -40,45 +40,43 @@ public class LouvainSelector implements Clusterer {
   private final static Logger LOG = LogManager.getLogger(LouvainSelector.class);
 
   private final Random rnd = new Random();
-  private final String dir;
-  private final PartitionWriter writer;
+  private final PartitionWriter writer = new PartitionWriter();
+  private final String fileToRead;
+  private final String fileToWrite;
 
-  public LouvainSelector(String dir) {
-    this.dir = dir;
-    writer = new PartitionWriter(dir);
+  public LouvainSelector(String fileToRead, String fileToWrite) {
+    this.fileToRead = fileToRead;
+    this.fileToWrite = fileToWrite;
   }
 
   @Override
-  public List<int[]> run() {
-    return run(10);
+  public LayeredCommunityStructure cluster() {
+    return cluster(10);
   }
 
-  public List<int[]> run(int times) {
+  public LayeredCommunityStructure cluster(int times) {
     long seed;
     double maxMod = 0d;
     double mod;
     List<int[]> output = new ArrayList<>();
 
-    LOG.info("Running " + times + " times:");
+    LOG.info("Running {} times:", times);
     for (int i = 0; i < times; i++) {
       seed = rnd.nextLong();
-      LOG.info("Run " + i + ":");
-      final Graph g = new GraphBuilder().fromFile(dir + "graph.csv");
+      LOG.info("Run {}:", i);
+      final Graph g = new GraphBuilder().fromFile(fileToRead);
       final LouvainDetector detector = new LouvainDetector(g, seed);
-      detector.run();
+      detector.cluster();
       mod = detector.modularity();
       if (mod > maxMod) {
         maxMod = mod;
-        output = detector.communities();
+        output = detector.getCommunities();
       }
     }
 
-    LOG.info("highest mod was " + maxMod);
-    write(output);
-    return output;
+    LOG.info("highest mod was {}", maxMod);
+    writer.write(output, fileToWrite);
+    return new LayeredCommunityStructure(output);
   }
 
-  private void write(List<int[]> communities) {
-    writer.write(communities, dir + "best-louvain.csv");
-  }
 }

@@ -23,6 +23,7 @@ SOFTWARE. */
 package com.github.neiljustice.louvain.file;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -30,16 +31,21 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
-public class FileLoader {
+public final class FileLoader {
 
-  public static List<String> readFile(String in) {
-    return readFile(in, StandardCharsets.UTF_8);
+  private FileLoader() {
+    // Disable instantiation of static helper class
   }
 
-  public static List<String> readFile(String in, Charset charset) {
+  public static List<String> readFile(String filename) {
+    return readFile(filename, StandardCharsets.UTF_8);
+  }
+
+  public static List<String> readFile(String filename, Charset charset) {
     final List<String> list = new ArrayList<>();
-    try (FileInputStream fis = new FileInputStream(in);
+    try (FileInputStream fis = new FileInputStream(filename);
          InputStreamReader isr = new InputStreamReader(fis, charset);
          BufferedReader reader = new BufferedReader(isr)) {
       String line;
@@ -50,5 +56,30 @@ public class FileLoader {
       throw new IllegalStateException(e);
     }
     return list;
+  }
+
+  public static void forEachLine(File file, Consumer<String> callback) {
+    forEachLine(file, callback, StandardCharsets.UTF_8);
+  }
+
+  public static void forEachLine(String filename, Consumer<String> callback) {
+    forEachLine(filename, callback, StandardCharsets.UTF_8);
+  }
+
+  public static void forEachLine(String filename, Consumer<String> callback, Charset charset) {
+    forEachLine(new File(filename), callback, charset);
+  }
+
+  public static void forEachLine(File file, Consumer<String> callback, Charset charset) {
+    try (FileInputStream fis = new FileInputStream(file);
+         InputStreamReader isr = new InputStreamReader(fis, charset);
+         BufferedReader reader = new BufferedReader(isr)) {
+      String line;
+      while ((line = reader.readLine()) != null) {
+        callback.accept(line);
+      }
+    } catch (IOException e) {
+      throw new IllegalStateException(e);
+    }
   }
 }

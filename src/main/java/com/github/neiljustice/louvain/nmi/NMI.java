@@ -78,13 +78,12 @@ public class NMI {
     return MI / ((e1 + e2) * 0.5);
   }
 
-  // in information theory, 0 log(0) == 0.
-  // this happens because often comm1 and comm2 have no nodes in common
+  /**
+   * Information theory log, where 0 log(0) == 0
+   *
+   * This case occurs when the two communities have no nodes in common.
+   */
   private static double log(double val) {
-    if (val == 0) {
-      return 0;
-    } else {
-      return Math.log(val);
-    }
+    return val == 0 ? 0 : Math.log(val);
   }
 }

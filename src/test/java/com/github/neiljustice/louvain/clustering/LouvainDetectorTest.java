@@ -39,7 +39,7 @@ public class LouvainDetectorTest {
   public void checkArxivGraphMod() {
     final Graph g = new GraphBuilder().fromFile(getFile("graphs/arxiv.txt"));
     final LouvainDetector ld = new LouvainDetector(g);
-    ld.run();
+    ld.cluster();
     assertTrue(ld.modularity() > 0.81);
   }
 
@@ -47,8 +47,8 @@ public class LouvainDetectorTest {
   public void checkCavemanGraph() {
     final Graph g = new GraphBuilder().fromFile(getFile("graphs/connected-caveman-graph.csv"));
     final LouvainDetector ld = new LouvainDetector(g);
-    final List<int[]> res = ld.run();
-    assertEquals(res.size(), 1);
+    final LayeredCommunityStructure res = ld.cluster();
+    assertEquals(res.layers(), 1);
     assertEquals(g.partitioning().numComms(), 6);
     assertTrue(ld.modularity() > 0.7);
   }

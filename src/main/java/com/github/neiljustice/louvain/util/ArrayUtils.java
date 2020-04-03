@@ -24,7 +24,11 @@ package com.github.neiljustice.louvain.util;
 
 import java.util.Random;
 
-public class ArrayUtils {
+public final class ArrayUtils {
+
+  private ArrayUtils() {
+    // Disable instantiation of static helper class
+  }
 
   public static int lastIndexOf(double[] a, double n) {
     if (a == null) {

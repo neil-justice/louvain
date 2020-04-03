@@ -30,19 +30,27 @@ import java.util.List;
 public class PartitionReader implements Clusterer {
   private static final String DEL = ":";
 
-  private final int order;
-  private final int layers;
-  private final List<int[]> communities = new ArrayList<>();
-  private final List<String> data;
+  private String filename;
 
   public PartitionReader(String filename) {
-    data = FileLoader.readFile(filename);
-    order = data.size();
-    layers = data.get(0).split(DEL).length - 1; // first col is node num.
-    reconstruct();
+    this.filename = filename;
   }
 
-  private void reconstruct() {
+  public String getFilename() {
+    return filename;
+  }
+
+  public void setFilename(String filename) {
+    this.filename = filename;
+  }
+
+  @Override
+  public LayeredCommunityStructure cluster() {
+    final List<String> data = FileLoader.readFile(filename);
+    final List<int[]> communities = new ArrayList<>();
+    final int order = data.size();
+    final int layers = data.get(0).split(DEL).length - 1; // first col is node num.
+
     for (int layer = 0; layer < layers; layer++) {
       communities.add(new int[order]);
     }
@@ -55,13 +63,10 @@ public class PartitionReader implements Clusterer {
           communities.get(layer)[node] = comm;
         }
       }
+
+      return new LayeredCommunityStructure(communities);
     } catch (NumberFormatException e) {
       throw new IllegalStateException(e);
     }
-  }
-
-  @Override
-  public List<int[]> run() {
-    return communities;
   }
 }

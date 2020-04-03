@@ -36,23 +36,13 @@ import java.util.List;
 public class PartitionWriter {
   private static final String DEL = ":";
 
-  private final String dir;
-  private int order;
-  private int layers;
-  private List<int[]> communities;
-
-  public PartitionWriter(String dir) {
-    this.dir = dir;
-  }
-
   public void write(List<int[]> communities, String filename) {
-    this.communities = communities;
-    order = communities.get(0).length;
-    layers = communities.size();
-    writeOut(filename);
+    final int order = communities.get(0).length;
+    final int layers = communities.size();
+    writeOut(filename, communities, order, layers);
   }
 
-  private List<String> prepareData() {
+  private List<String> prepareData(List<int[]> communities, int order, int layers) {
     final List<String> data = new ArrayList<>();
 
     for (int node = 0; node < order; node++) {
@@ -67,9 +57,9 @@ public class PartitionWriter {
     return data;
   }
 
-  private void writeOut(String filename) {
-    final Path filepath = Paths.get(dir + filename);
-    final List<String> data = prepareData();
+  private void writeOut(String filename, List<int[]> communities, int order, int layers) {
+    final Path filepath = Paths.get(filename);
+    final List<String> data = prepareData(communities, order, layers);
 
     try {
       Files.write(filepath, data, StandardCharsets.UTF_8);

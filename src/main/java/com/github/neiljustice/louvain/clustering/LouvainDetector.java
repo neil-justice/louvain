@@ -30,6 +30,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -66,13 +67,13 @@ public class LouvainDetector implements Clusterer {
   }
 
   @Override
-  public List<int[]> run() {
-    return run(9999);
+  public LayeredCommunityStructure cluster() {
+    return cluster(Integer.MAX_VALUE);
   }
 
-  public List<int[]> run(int maxLayers) {
+  public LayeredCommunityStructure cluster(int maxLayers) {
     if (maxLayers <= 0) {
-      return null;
+      maxLayers = Integer.MAX_VALUE;
     }
     LOG.info("Detecting graph communities...");
 
@@ -86,15 +87,52 @@ public class LouvainDetector implements Clusterer {
     while (totalMoves > 0 && maxLayers >= layer);
 
     communities = mapper.run();
-    return communities;
+    return new LayeredCommunityStructure(communities);
   }
 
+  /**
+   * Get the modularity of the highest layer of the graph. If called before the clusterer has run, will throw
+   * an {@link IndexOutOfBoundsException}.
+   */
   public double modularity() {
     return graphs.get(layer).partitioning().modularity();
   }
 
-  public List<int[]> communities() {
+  /**
+   * Get the modularity of a specific layer of the graph. If called before the clusterer has run, will throw
+   * an {@link IndexOutOfBoundsException}.
+   *
+   * @param l the index of the layer.
+   */
+  public double modularity(int l) {
+    if (l >= graphs.size()) {
+      throw new ArrayIndexOutOfBoundsException("Graph has " + graphs.size() + " layers, asked for layer " + l);
+    }
+    return graphs.get(l).partitioning().modularity();
+  }
+
+  public List<int[]> getCommunities() {
     return communities;
+  }
+
+  /**
+   * Get the number of layers created during the detection process.
+   *
+   * If called before the clusterer has run, will return 0.
+   */
+  public int getLayerCount() {
+    return layer;
+  }
+
+  /**
+   * Get the graphs created during the detection process.
+   *
+   * If called before the clusterer has run, will return an empty list.
+   *
+   * @return an immutable view of the graphs list.
+   */
+  public List<Graph> getGraphs() {
+    return Collections.unmodifiableList(graphs);
   }
 
   private void addNewLayer() {

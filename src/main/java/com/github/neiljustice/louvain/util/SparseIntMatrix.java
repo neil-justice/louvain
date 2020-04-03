@@ -41,7 +41,7 @@ public class SparseIntMatrix {
 
   public SparseIntMatrix(SparseIntMatrix m) {
     this.size = m.size();
-    map = m.copyMap();
+    map = new TLongIntHashMap(m.map);
     compressed = m.compressed;
   }
 
@@ -72,10 +72,6 @@ public class SparseIntMatrix {
       compressed = true;
     }
     return new Iterator();
-  }
-
-  public TLongIntHashMap copyMap() {
-    return new TLongIntHashMap(map);
   }
 
   public boolean isSymmetric() {

@@ -28,15 +28,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Assigns each node to a randomly generated set.  Can be run in two
- * different ways - either generates layers of a set size, or given
- * a real community partition generates random communities of exactly the
- * same size.
+ * Assigns each node to a randomly generated set. Given a real community partition
+ * generates random communities of exactly the same size.
  */
 public class RandomCommunityAssigner implements Clusterer {
   private final List<int[]> randomCommunities = new ArrayList<>();
   private final int layers;
   private final int order;
+
+  public RandomCommunityAssigner(LayeredCommunityStructure lcs) {
+    order = lcs.layer(0).order();
+    layers = lcs.layers();
+
+    for (int layer = 0; layer < layers; layer++) {
+      final int[] comm = new int[order];
+      randomCommunities.add(comm);
+      System.arraycopy(lcs.layer(layer).communities(), 0, comm, 0, order);
+      ArrayUtils.shuffle(comm);
+    }
+  }
 
   public RandomCommunityAssigner(List<int[]> actualCommunities) {
     order = actualCommunities.get(0).length;
@@ -51,15 +61,15 @@ public class RandomCommunityAssigner implements Clusterer {
   }
 
   @Override
-  public List<int[]> run() {
-    return randomCommunities;
+  public LayeredCommunityStructure cluster() {
+    return new LayeredCommunityStructure(randomCommunities);
   }
 
-  public List<int[]> reshuffle() {
+  public LayeredCommunityStructure reshuffle() {
     for (int layer = 0; layer < layers; layer++) {
       ArrayUtils.shuffle(randomCommunities.get(layer));
     }
-    return randomCommunities;
+    return new LayeredCommunityStructure(randomCommunities);
   }
 
 }

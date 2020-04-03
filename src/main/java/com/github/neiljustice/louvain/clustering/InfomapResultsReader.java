@@ -59,10 +59,10 @@ public class InfomapResultsReader implements Clusterer {
   }
 
   @Override
-  public List<int[]> run() {
+  public LayeredCommunityStructure cluster() {
     read();
     process();
-    return communities;
+    return new LayeredCommunityStructure(communities);
   }
 
   public void read() {
