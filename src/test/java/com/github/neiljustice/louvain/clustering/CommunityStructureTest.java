@@ -1,4 +1,3 @@
-
 /* MIT License
 
 Copyright (c) 2018 Neil Justice
@@ -23,21 +22,17 @@ SOFTWARE. */
 
 package com.github.neiljustice.louvain.clustering;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 public class CommunityStructureTest {
-  private static CommunityStructure cs;
-  
-  @BeforeClass
-  public static void init() {
-    int[] partition = {1,8,8,5,1,5,2,9,0,9};
+  private CommunityStructure cs;
+
+  @Before
+  public void init() {
+    final int[] partition = {1, 8, 8, 5, 1, 5, 2, 9, 0, 9};
     cs = new CommunityStructure(partition);
   }
 
@@ -54,7 +49,7 @@ public class CommunityStructureTest {
     assertEquals(cs.community(8), 5);
     assertEquals(cs.community(9), 4);
   }
-  
+
   @Test
   public void checkSizes() {
     assertEquals(cs.communitySize(0), cs.communityMembers(0).size());
@@ -64,7 +59,7 @@ public class CommunityStructureTest {
     assertEquals(cs.communitySize(4), cs.communityMembers(4).size());
     assertEquals(cs.communitySize(5), cs.communityMembers(5).size());
   }
-  
+
   @Test
   public void checkNumComms() {
     assertEquals(cs.numComms(), 6);

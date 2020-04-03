@@ -1,4 +1,3 @@
-
 /* MIT License
 
 Copyright (c) 2018 Neil Justice
@@ -23,10 +22,18 @@ SOFTWARE. */
 
 package com.github.neiljustice.louvain.clustering;
 
-import java.util.*;
-import java.io.*;
-import gnu.trove.map.hash.TObjectIntHashMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.map.hash.TObjectIntHashMap;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Reads the .tree files produced by the Infomap community detection algorithm.
@@ -34,84 +41,91 @@ import gnu.trove.map.hash.TIntObjectHashMap;
  * The official Infomap website</a> for more on Infomap.
  */
 public class InfomapResultsReader implements Clusterer {
+  private final File file;
+  private final Charset charset;
+  private final List<int[]> communities = new ArrayList<>();
+  private final TIntObjectHashMap<String> commTags = new TIntObjectHashMap<>();
   private int nodeCount = 0;
   private int layerCount = 0;
-  private final File file;
-  private final List<int[]> communities = new ArrayList<int[]>();
-  private final TIntObjectHashMap<String> commTags = new TIntObjectHashMap<>();
-  
+
+  public InfomapResultsReader(String filename, Charset charset) {
+    file = new File(filename);
+    this.charset = charset;
+  }
+
   public InfomapResultsReader(String filename) {
     file = new File(filename);
+    this.charset = StandardCharsets.UTF_8;
   }
-  
+
   @Override
-  public List<int[]> run() {
+  public LayeredCommunityStructure cluster() {
     read();
     process();
-    return communities;
+    return new LayeredCommunityStructure(communities);
   }
-  
-  public void read(){
+
+  public void read() {
     try {
       getInfo();
       initialise();
       readLines();
-    } catch(NumberFormatException e) {
-      throw new Error("invalid file format");
-    } catch (FileNotFoundException e) {
-      throw new Error("file not found");
-    } catch (IOException e) {
-      throw new Error("IO error");
+    } catch (NumberFormatException | IOException e) {
+      throw new IllegalStateException(e);
     }
   }
-  
+
   // reads lines of format:
   // 1:1:1 0.00244731 "83698" 83698
   // and puts node ID and community info into <int, String> map
-  private void readLines() 
-  throws NumberFormatException, FileNotFoundException, IOException {
-    
-    BufferedReader reader = new BufferedReader(new FileReader(file));
-    String line;
-    
-    while ((line = reader.readLine()) != null) {
-      if (!line.startsWith("#")) {      
-        String[] splitLine = line.split(" ");
-        int node = Integer.parseInt(splitLine[3]);
-        String layers = splitLine[0].substring(0, splitLine[0].lastIndexOf(":"));
-        commTags.put(node, layers);
-      }
-    }
-    reader.close();
-  }
-  
-  // gets the no. of nodes and layers from the file
-  private void getInfo()
-  throws NumberFormatException, FileNotFoundException, IOException {
-    
-    BufferedReader reader = new BufferedReader(new FileReader(file));
+  private void readLines() throws NumberFormatException, IOException {
     String line;
 
-    while ((line = reader.readLine()) != null) {
-      if (!line.startsWith("#")) {
-        String[] splitLine = line.split(" ");
-        int node = Integer.parseInt(splitLine[3]);
-        int layers = splitLine[0].split(":").length - 1;
-        if (node > nodeCount) nodeCount = node;
-        if (layers > layerCount) layerCount = layers;
+    try (FileInputStream fis = new FileInputStream(file);
+         InputStreamReader isr = new InputStreamReader(fis, charset);
+         BufferedReader reader = new BufferedReader(isr)) {
+      while ((line = reader.readLine()) != null) {
+        if (!line.startsWith("#")) {
+          final String[] splitLine = line.split(" ");
+          final int node = Integer.parseInt(splitLine[3]);
+          final String layers = splitLine[0].substring(0, splitLine[0].lastIndexOf(":"));
+          commTags.put(node, layers);
+        }
+      }
+    }
+  }
+
+  // gets the no. of nodes and layers from the file
+  private void getInfo() throws NumberFormatException, IOException {
+    String line;
+
+    try (FileInputStream fis = new FileInputStream(file);
+         InputStreamReader isr = new InputStreamReader(fis, charset);
+         BufferedReader reader = new BufferedReader(isr)) {
+      while ((line = reader.readLine()) != null) {
+        if (!line.startsWith("#")) {
+          final String[] splitLine = line.split(" ");
+          final int node = Integer.parseInt(splitLine[3]);
+          final int layers = splitLine[0].split(":").length - 1;
+          if (node > nodeCount) {
+            nodeCount = node;
+          }
+          if (layers > layerCount) {
+            layerCount = layers;
+          }
+        }
       }
     }
     nodeCount++;
-    reader.close();
   }
-  
+
   private void initialise() {
     for (int layer = 0; layer < layerCount; layer++) {
-      int[] comms = new int[nodeCount];
+      final int[] comms = new int[nodeCount];
       communities.add(comms);
     }
   }
-  
+
   private void print() {
     for (int node = 0; node < nodeCount; node++) {
       System.out.print(node + ":");
@@ -121,38 +135,40 @@ public class InfomapResultsReader implements Clusterer {
       System.out.println();
     }
   }
-  
+
   private void process() {
     for (int layer = 0; layer < layerCount; layer++) {
       assignCommunityIDs(layer);
     }
   }
-  
+
   private void assignCommunityIDs(int layer) {
-    TObjectIntHashMap<String> map = new TObjectIntHashMap<String>();
+    final TObjectIntHashMap<String> map = new TObjectIntHashMap<>();
     int count = 0;
-    int[] comms = communities.get(layer);
-    
+    final int[] comms = communities.get(layer);
+
     for (int node = 0; node < nodeCount; node++) {
-      String tag = truncateTag(commTags.get(node), layer);
+      final String tag = truncateTag(commTags.get(node), layer);
       if (!map.containsKey(tag)) {
         map.put(tag, count);
         count++;
       }
     }
-    
+
     for (int node = 0; node < nodeCount; node++) {
-      String tag = truncateTag(commTags.get(node), layer);
+      final String tag = truncateTag(commTags.get(node), layer);
       comms[node] = map.get(tag);
     }
   }
-  
+
   // infomap communities are ordered as: 'top:high:mid:low'  if layer == 2, this would
   // cut off ':mid:low', returning 'top:high'
   private String truncateTag(String tag, int layer) {
     for (int i = 0; i < layer; i++) {
-      int t = tag.lastIndexOf(":");
-      if (t != -1) tag = tag.substring(0, t);
+      final int t = tag.lastIndexOf(":");
+      if (t != -1) {
+        tag = tag.substring(0, t);
+      }
     }
     return tag;
   }

@@ -1,4 +1,3 @@
-
 /* MIT License
 
 Copyright (c) 2018 Neil Justice
@@ -21,27 +20,14 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-package com.github.neiljustice.louvain.nmi;
+package com.github.neiljustice.louvain.exception;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
-
-public class SoftClusteringTest {
-  
-  @BeforeClass
-  public static void init() {
-    
+public class LouvainException extends RuntimeException {
+  public LouvainException(String s) {
+    super(s);
   }
 
-  // @Test
-  // public void check() {
-  //   
-  // }
-
+  public LouvainException(String s, Throwable throwable) {
+    super(s, throwable);
+  }
 }

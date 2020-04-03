@@ -1,4 +1,3 @@
-
 /* MIT License
 
 Copyright (c) 2018 Neil Justice
@@ -23,24 +22,19 @@ SOFTWARE. */
 
 package com.github.neiljustice.louvain.nmi;
 
-import com.github.neiljustice.louvain.clustering.*;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.junit.After;
+import com.github.neiljustice.louvain.clustering.CommunityStructure;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 public class HardClusteringTest {
-  private static HardClustering hc;
-  
-  @BeforeClass
-  public static void init() {
-    int[] partition = {1,8,8,5,1,5,2,9,0,9};
-    CommunityStructure cs = new CommunityStructure(partition);
+  private HardClustering hc;
+
+  @Before
+  public void init() {
+    final int[] partition = {1, 8, 8, 5, 1, 5, 2, 9, 0, 9};
+    final CommunityStructure cs = new CommunityStructure(partition);
     hc = new HardClustering(cs);
   }
 
@@ -48,8 +42,8 @@ public class HardClusteringTest {
   public void checkLength() {
     assertEquals(hc.length(), 6);
     assertEquals(hc.N(), 10);
-  } 
-  
+  }
+
   @Test
   public void checkDistribution() {
     assertEquals(hc.distribution(0), 0.2d, 0d);

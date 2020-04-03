@@ -1,4 +1,3 @@
-
 /* MIT License
 
 Copyright (c) 2018 Neil Justice
@@ -23,45 +22,51 @@ SOFTWARE. */
 
 package com.github.neiljustice.louvain.clustering;
 
-import java.util.*;
 import com.github.neiljustice.louvain.file.FileLoader;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PartitionReader implements Clusterer {
-  private final String del = ":";
-  private final String filename;
-  private final int order;
-  private final int layers;
-  private final List<int[]> communities = new ArrayList<>();
-  private final List<String> data;
-  
+  private static final String DEL = ":";
+
+  private String filename;
+
   public PartitionReader(String filename) {
     this.filename = filename;
-    data = FileLoader.readFile(filename);
-    order = data.size();
-    layers = data.get(0).split(del).length - 1; // first col is node num.
-    reconstruct();
   }
-  
-  private void reconstruct() {
+
+  public String getFilename() {
+    return filename;
+  }
+
+  public void setFilename(String filename) {
+    this.filename = filename;
+  }
+
+  @Override
+  public LayeredCommunityStructure cluster() {
+    final List<String> data = FileLoader.readFile(filename);
+    final List<int[]> communities = new ArrayList<>();
+    final int order = data.size();
+    final int layers = data.get(0).split(DEL).length - 1; // first col is node num.
+
     for (int layer = 0; layer < layers; layer++) {
       communities.add(new int[order]);
     }
-    
+
     try {
       for (int node = 0; node < order; node++) {
-        String[] line = data.get(node).split(del);
-        for (int layer = 0; layer < layers + 0; layer++) {
-          int comm = Integer.parseInt(line[layer + 1]);
+        final String[] line = data.get(node).split(DEL);
+        for (int layer = 0; layer < layers; layer++) {
+          final int comm = Integer.parseInt(line[layer + 1]);
           communities.get(layer)[node] = comm;
         }
       }
+
+      return new LayeredCommunityStructure(communities);
     } catch (NumberFormatException e) {
-      e.printStackTrace();
+      throw new IllegalStateException(e);
     }
-  }
-  
-  @Override
-  public List<int[]> run() {
-    return communities;
   }
 }

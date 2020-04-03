@@ -1,0 +1,25 @@
+<!-- This file specifies a spotbugs filter for excluding reports that
+     should not be considered errors.
+
+     The format of this file is documented at:
+
+       https://spotbugs.readthedocs.io/en/latest/filter.html
+
+     When possible, please specify the full names of the bug codes,
+     using the pattern attribute, to make it clearer what reports are
+     being suppressed.  You can find a listing of codes at:
+
+       https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html
+  -->
+
+<FindBugsFilter>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP"/>
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
+    <Match>
+        <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+    </Match>
+</FindBugsFilter>

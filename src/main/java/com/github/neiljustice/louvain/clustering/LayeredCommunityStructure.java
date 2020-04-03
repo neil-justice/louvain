@@ -1,4 +1,3 @@
-
 /* MIT License
 
 Copyright (c) 2018 Neil Justice
@@ -23,24 +22,29 @@ SOFTWARE. */
 
 package com.github.neiljustice.louvain.clustering;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LayeredCommunityStructure {
   private final List<CommunityStructure> layerStructures;
   private final int layers;
-  
+
   public LayeredCommunityStructure(List<int[]> communities) {
     layers = communities.size();
-    layerStructures = new ArrayList<CommunityStructure>();
+    layerStructures = new ArrayList<>();
     for (int layer = 0; layer < layers; layer++) {
       layerStructures.add(new CommunityStructure(communities.get(layer)));
     }
   }
-  
+
   public CommunityStructure layer(int layer) {
-    if (layer >= layers) throw new Error("layer index out of bounds");
+    if (layer >= layers) {
+      throw new IndexOutOfBoundsException("layer index out of bounds");
+    }
     return layerStructures.get(layer);
   }
-  
-  public int layers() { return layers; }
+
+  public int layers() {
+    return layers;
+  }
 }

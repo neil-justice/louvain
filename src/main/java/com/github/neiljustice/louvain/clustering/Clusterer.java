@@ -1,4 +1,3 @@
-
 /* MIT License
 
 Copyright (c) 2018 Neil Justice
@@ -26,8 +25,8 @@ package com.github.neiljustice.louvain.clustering;
 import java.util.List;
 
 /**
- * Interface which all non-fuzzy community detectors or clusterers inherit from.
+ * Interface which all community detectors or clusterers inherit from.
  */
 public interface Clusterer {
-  public List<int[]> run();
+  LayeredCommunityStructure cluster();
 }
