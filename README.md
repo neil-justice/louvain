@@ -4,15 +4,16 @@ Java implementation of the Louvain method for community detection.
 
 Input: weighted, undirected graph, defined in a CSV file as a list of edges.  See the graphs at src/test/resources for examples.  Nodes may be named or indexed, and the indexes do not have to start at zero or be continuous.
 
-# Features
+## Features
 
 * Read graphs from files, build manually, or generate random [Erdős–Rényi graphs](https://en.wikipedia.org/wiki/Erd%C5%91s%E2%80%93R%C3%A9nyi_model).
+* Detect communities using the [Louvain method](https://en.wikipedia.org/wiki/Louvain_modularity) and calculate the [modularity](https://en.wikipedia.org/wiki/Modularity_(networks) of the resulting clustering.
 * Read [infomap](https://www.mapequation.org/) output files.
 * Compare different clusterings of a graph using Normalised Mutual Information ([NMI](https://en.wikipedia.org/wiki/Mutual_information)).
 * Assign nodes to random communities (for baseline comparisons of a clustering).
 * Read and write community structures to disk.
 
-# Examples
+## Examples
 
 Load a graph file and detect communities using the Louvain method, and print the modularity of the detected communities:
 ```java
@@ -63,7 +64,7 @@ Run the Louvain community detection 10 times, and write the clustering with the 
     final LayeredCommunityStructure cs = ls.cluster(10);
 ```
 
-# Licensing
+## Licensing
 
 License: MIT
 
