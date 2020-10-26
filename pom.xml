@@ -14,7 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <trove4j.version>3.0.3</trove4j.version>
         <log4j2.version>2.13.3</log4j2.version>
-        <junit.version>4.11</junit.version>
+        <junit.version>4.13.1</junit.version>
     </properties>  
     
     <dependencies>
